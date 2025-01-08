@@ -18,6 +18,7 @@ typedef struct
 	char pront [10];
 } reg;
 
+
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
 void bubbleSort(reg arr[], int n);
@@ -34,8 +35,6 @@ void cadastroDefault (reg * vet)
 {
 	FILE * Arq;
 	int i = 0;
-	reg registroExistente;
-	
     
     memset(vet, '\0', sizeof(vet)); /*Limpar o vetor, adicionar \0 no buffer de memória do vetor*/
     
@@ -71,23 +70,8 @@ void cadastroDefault (reg * vet)
 	strcpy (vet[29].nome,"Josceli Maria Tenorio"); strcpy (vet[29].pront,"SZ124382");
     
 	bubbleSort(vet, TOTPROFS);
-	
-	// Abrir o arquivo em modo leitura para verificar registros existentes
-    Arq = fopen("USUARIOS.DAT", "r");
-    if (Arq != NULL) {
-        while (fread(&registroExistente, sizeof(reg), 1, Arq)) {
-            for (i = 0; i < TOTPROFS; i++) {
-                // Verificar se o registro já existe (baseado no prontuário)
-                if (strcmp(vet[i].pront, registroExistente.pront) == 0) {
-                    // Registro encontrado, marcamos como existente
-                    vet[i].nome[0] = '\0'; // Marca o registro como duplicado
-                }
-            }
-        }
-        fclose(Arq);
-    }
 
-	Arq = fopen ("USUARIOS.DAT", "w"); /*dat para usar o fread e ler tudo de uma vez*/
+	Arq = fopen ("USUARIOS.DAT", "wb"); /*dat para usar o fread e ler tudo de uma vez*/
     
 	if (Arq == NULL)
   	  {
@@ -104,7 +88,7 @@ void cadastroDefault (reg * vet)
 	fclose(Arq);    
 }
 
-void bubbleSort(reg arr[], int n) {
+void bubbleSort(reg arr[], int n) { /*n = tamanho do vetor*/
     int i, j;        // Declaração de variáveis antes do for
     reg temp;      // Reg temporário para troca structs
 
@@ -247,7 +231,7 @@ void exibirUsuarios(char *arquivo) {
         return;
     }
 
-    printf("Lista de Usuários:\n");
+    printf("Lista de Usuários:\n\n");
     while (fread(&usuario, sizeof(reg), 1, Arq)) {
         printf("Nome: %s | Prontuário: %s\n", usuario.nome, usuario.pront);
     }
@@ -337,7 +321,16 @@ void novoUsuario(char *arquivo){
     fread(vet, sizeof(reg), tamanho, Arq);
     fclose(Arq);
 	
-	strcpy (vet[tamanho + 1].nome, nome); strcpy (vet[tamanho + 1].pront, pront);
+	printf ("\nTamanho é = %i", tamanho); getch; /*retorno esperado é 30*/
+	
+	strcpy (vet[tamanho].nome, nome); strcpy (vet[tamanho].pront, pront);
+	
+	printf ("\nAdicionado nome %s", vet[tamanho].nome);
+	printf ("\nAdicionado pront %s", vet[tamanho].pront); getch();
+	
+	
+	bubbleSort(vet, tamanho);
+	
 	
 	Arq = fopen(arquivo, "wb");
 	if (Arq == NULL) {
@@ -345,9 +338,8 @@ void novoUsuario(char *arquivo){
         free(vet);
         return;
     }
-    fwrite(vet, sizeof(reg), tamanho + 1, Arq);
-    
-    bubbleSort(vet, tamanho + 1);
+
+    fwrite(vet, sizeof(reg), tamanho + 1, Arq);    
     fclose(Arq);
     
     free(vet);
