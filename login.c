@@ -250,14 +250,10 @@ void gerenciar (char E)
 					                case '1': novoUsuario("USUARIOS.DAT"); getch(); break;
 					                case '2': removerUsuario("USUARIOS.DAT"); getch(); break;
 					                case '3': exibirUsuarios("USUARIOS.DAT"); getch(); break;
-					                case '4':{ 	reg *padrao = malloc(TOTPROFS * sizeof(reg)); // Alocação dinâmica do vetor
-											    if (padrao == NULL) {
-											        printf("Erro: Malloc devolveu NULL.\n");
-											        exit(1); // Finaliza o programa
-											    }
-									cadastroDefault(padrao); 
-									printf("\nPadrão de usuários restaurado"); getch(); 
-									} break;
+					                case '4':{ 	reg padrao [TOTPROFS];
+												cadastroDefault(padrao); 
+												printf("\nPadrão de usuários restaurado"); getch(); 
+											} break;
 					                case '5': break;    
 					                default: printf("\nOpção inválida.\n"); getche(); break;
 		   							}  
@@ -507,4 +503,4 @@ void inicializar (void){
 
 int compararRegistros(const reg *a, const reg *b) {
     return (strcmp(a->nome, b->nome) == 0 && strcmp(a->pront, b->pront) == 0);
-}    
+}        
