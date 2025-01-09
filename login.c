@@ -30,6 +30,64 @@ void exibirUsuarios(char *arquivo);
 void removerUsuario(char *arquivo);
 void novoUsuario(char *arquivo);
 
+/*Corpo do programa*/
+int main (){
+	
+	reg *professores = malloc(TOTPROFS * sizeof(reg)); // Alocação dinâmica do vetor
+    if (professores == NULL) {
+        printf("Erro: Malloc devolveu NULL.\n");
+        exit(1); // Finaliza o programa
+    }
+	int i =0;
+
+	setlocale(LC_ALL, "Portuguese"); /*Definir padrão da língua e não precisar usar tabela ASCII*/
+	
+/*1º Cadastrar os usuários padrão*/	
+	/*cadastroDefault (professores);*/
+	
+ /*for (i = 0; i < TOTPROFS; i++) {
+        printf("Nome: %s, Prontuario: %s\n", professores[i].nome, professores[i].pront);
+    }*/
+
+/*2º Capturar o login do usuário*/
+	int tent = 3;
+	char nome[100], prontuario[10];
+
+	while (tent != 0)
+	{
+		system ("cls");
+		printf ("Você tem %d tentativa(s) de login\n", tent);
+		printf("\nNome do usuário: "); fgets(nome, 100, stdin);
+		printf("Prontuário do usuário: "); fgets(prontuario, 10, stdin);
+		/*Remover o caractere '\n' se ele estiver presente após fgets (quando aperta enter ele adiciona o \n que afeta na comparação*/
+	    nome[strcspn(nome, "\n")] = '\0';
+	    prontuario[strcspn(prontuario, "\n")] = '\0';
+		
+		/*Validar login*/
+	    int pos = buscaBinariaArquivo("USUARIOS.DAT", nome, prontuario);
+	    if (pos == -1) {
+	        printf("\nUsuário ou prontuário inválido!\n");
+	        tent = tent - 1;
+	        getchar();
+	        if (tent == 0) return -1;
+	    } else {
+	        printf("\nLogin bem-sucedido!\n"); break;
+		}
+	}	    
+
+/* 3º Exibir Menu do sistema*/
+	sleep(1);  /*Para sistemas UNIX-like*/
+    /*Sleep(2000); /*Para sistemas Windows*/
+	do
+	{
+		op = menu();
+		gerenciar(op);
+	}
+	 while ( op!='0' );
+	
+	return 0;
+}
+
 /*Funções*/
 void cadastroDefault (reg * vet)
 {
@@ -105,21 +163,6 @@ void bubbleSort(reg arr[], int n) { /*n = tamanho do vetor*/
         }
     }
 }
-
-/*int buscaBinaria(reg *vet, int n, char *nome, char *prontuario) {
-    int esq = 0, dir = n - 1, meio;
-    while (esq <= dir) {
-        meio = (esq + dir) / 2;
-        if (strcmp(vet[meio].nome, nome) == 0 && strcmp(vet[meio].pront, prontuario) == 0) {
-            return meio; // Usuário encontrado
-        } else if (strcmp(vet[meio].nome, nome) < 0) {
-            esq = meio + 1; // Procura à direita
-        } else {
-            dir = meio - 1; // Procura à esquerda
-        }
-    }
-    return -1; // Usuário não encontrado
-}*/
 
 int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario) {
     FILE *Arq;
@@ -215,7 +258,7 @@ void gerenciar (char E)
 					                case '4': break;    
 					                default: printf("Opção inválida.\n"); break;
 		   							}  
-						} while (op != '4');	
+						} while (op != '4'); break;	
            			}
    	 	 case '0':  exit(0);     	 break;
    }    
@@ -231,7 +274,7 @@ void exibirUsuarios(char *arquivo) {
         return;
     }
 
-    printf("Lista de Usuários:\n\n");
+    printf("\nLista de Usuários:\n\n");
     while (fread(&usuario, sizeof(reg), 1, Arq)) {
         printf("Nome: %s | Prontuário: %s\n", usuario.nome, usuario.pront);
     }
@@ -242,9 +285,9 @@ void removerUsuario(char *arquivo) {
     FILE *Arq;
     reg *vet;
     char nome[100];
-    int tamanho, i, encontrado = 0;
+    int tamanho, i, j = 0, encontrado = -1;
 
-	exibirUsuarios(arquivo);
+    exibirUsuarios(arquivo);
     printf("\nDigite o nome do usuário a ser removido: ");
     fflush(stdin); fgets(nome, 100, stdin); nome[strcspn(nome, "\n")] = '\0';
 
@@ -258,150 +301,96 @@ void removerUsuario(char *arquivo) {
     tamanho = ftell(Arq) / sizeof(reg);
     rewind(Arq);
 
-/*A função malloc aloca dinamicamente uma quantidade de memória suficiente para armazenar um array de tamanho elementos, onde cada elemento tem o tamanho de sizeof(reg) (o tamanho da estrutura ou tipo reg).*/
-    vet = (reg *)malloc(tamanho * sizeof(reg)); 
+    vet = (reg *)malloc(tamanho * sizeof(reg));
     fread(vet, sizeof(reg), tamanho, Arq);
     fclose(Arq);
 
-    // Procurar e remover o usuário
+    // Procurar o usuário
     for (i = 0; i < tamanho; i++) {
         if (strcmp(nome, vet[i].nome) == 0) {
-            encontrado = 1;
+            encontrado = i;
             break;
         }
     }
-    if (!encontrado) {
+    if (encontrado == -1) {
         printf("Usuário não encontrado.\n");
         free(vet);
         return;
     }
 
-    for (; i < tamanho - 1; i++) {
-        vet[i] = vet[i + 1];
+    // Ajustar vetor excluindo o encontrado
+    for (i = 0; i < tamanho; i++) {
+        if (i != encontrado) {
+            vet[j] = vet[i];
+            j++;
+        }
     }
 
     // Regravar o arquivo
     Arq = fopen(arquivo, "wb");
-    fwrite(vet, sizeof(reg), tamanho - 1, Arq);
+    if (Arq == NULL) {
+        printf("Erro ao abrir o arquivo para gravação.\n");
+        free(vet);
+        return;
+    }
+    fwrite(vet, sizeof(reg), j, Arq);
     fclose(Arq);
 
     free(vet);
     printf("Usuário removido com sucesso!\n");
 }
 
-void novoUsuario(char *arquivo){
-	FILE *Arq;
+void novoUsuario(char *arquivo) {
+    FILE *Arq;
+    reg novo;
     reg *vet;
-    reg * novo;
-    char nome[100];
-    char pront [10];
     int tamanho, i;
-	
-	printf("\n\nDigite o nome do novo usuário: ");
-    fflush(stdin); fgets(nome, 100, stdin); nome[strcspn(nome, "\n")] = '\0';
-    
-    printf("Digite o prontuário do novo usuário: ");
-    fflush(stdin); fgets(pront, 10, stdin); pront[strcspn(pront, "\n")] = '\0';
-	
-	Arq = fopen(arquivo, "rb");
+
+    // Abrir o arquivo em modo leitura/escrita binária
+    Arq = fopen(arquivo, "rb+");
     if (Arq == NULL) {
-        printf("Erro ao abrir o arquivo.\n");
+        printf("Erro ao abrir o arquivo %s\n", arquivo);
         return;
     }
+
+    // Determinar o tamanho atual do arquivo
     fseek(Arq, 0, SEEK_END);
-    tamanho = ftell(Arq) / sizeof(reg);
+    tamanho = ftell(Arq) / sizeof(reg); // Quantidade de registros
     rewind(Arq);
-    
-    vet = (reg *)malloc((tamanho + 1) * sizeof(reg)); 
-     if (vet == NULL) {
-        printf("Erro ao alocar memória.\n");
+
+    // Alocar memória para armazenar todos os registros
+    vet = (reg *)malloc((tamanho + 1) * sizeof(reg)); // +1 para o novo registro
+    if (vet == NULL) {
+        printf("Erro ao alocar memória\n");
         fclose(Arq);
         return;
     }
+
+    // Ler os registros existentes para o vetor
     fread(vet, sizeof(reg), tamanho, Arq);
-    fclose(Arq);
-	
-	printf ("\nTamanho é = %i", tamanho); getch; /*retorno esperado é 30*/
-	
-	strcpy (vet[tamanho].nome, nome); strcpy (vet[tamanho].pront, pront);
-	
-	printf ("\nAdicionado nome %s", vet[tamanho].nome);
-	printf ("\nAdicionado pront %s", vet[tamanho].pront); getch();
-	
-	
-	bubbleSort(vet, tamanho);
-	
-	
-	Arq = fopen(arquivo, "wb");
-	if (Arq == NULL) {
-        printf("Erro ao abrir o arquivo para escrita.\n");
-        free(vet);
-        return;
-    }
 
-    fwrite(vet, sizeof(reg), tamanho + 1, Arq);    
+    // Solicitar os dados do novo usuário
+    printf("\n\nDigite o nome do novo usuário: ");
+    fgets(novo.nome, sizeof(novo.nome), stdin);
+    novo.nome[strcspn(novo.nome, "\n")] = '\0'; // Remover o \n do final
+    printf("Digite o prontuário do novo usuário: ");
+    fgets(novo.pront, sizeof(novo.pront), stdin);
+    novo.pront[strcspn(novo.pront, "\n")] = '\0'; // Remover o \n do final
+
+    // Adicionar o novo registro ao vetor
+    vet[tamanho] = novo;
+    tamanho++; // Atualizar o tamanho do vetor
+
+    // Ordenar os registros usando Bubble Sort
+    bubbleSort(vet, tamanho);
+
+    // Reescrever o arquivo com os registros ordenados
+    rewind(Arq);
+    fwrite(vet, sizeof(reg), tamanho, Arq);
+
+    // Fechar o arquivo e liberar memória
     fclose(Arq);
-    
     free(vet);
-    printf("Usuário adicionado com sucesso!\n");
+
+    printf("Novo usuário cadastrado com sucesso e arquivo atualizado!\n");
 }
-
-
-/*Corpo do programa*/
-int main (){
-	
-	reg *professores = malloc(TOTPROFS * sizeof(reg)); // Alocação dinâmica do vetor
-    if (professores == NULL) {
-        printf("Erro: Malloc devolveu NULL.\n");
-        exit(1); // Finaliza o programa
-    }
-	int i =0;
-
-	setlocale(LC_ALL, "Portuguese"); /*Definir padrão da língua e não precisar usar tabela ASCII*/
-	
-/*1º Cadastrar os usuários padrão*/	
-	cadastroDefault (professores);
-	
- /*for (i = 0; i < TOTPROFS; i++) {
-        printf("Nome: %s, Prontuario: %s\n", professores[i].nome, professores[i].pront);
-    }*/
-
-/*2º Capturar o login do usuário*/
-	int tent = 3;
-	char nome[100], prontuario[10];
-
-	while (tent != 0)
-	{
-		system ("cls");
-		printf ("Você tem %d tentativa(s) de login\n", tent);
-		printf("\nNome do usuário: "); fgets(nome, 100, stdin);
-		printf("Prontuário do usuário: "); fgets(prontuario, 10, stdin);
-		/*Remover o caractere '\n' se ele estiver presente após fgets (quando aperta enter ele adiciona o \n que afeta na comparação*/
-	    nome[strcspn(nome, "\n")] = '\0';
-	    prontuario[strcspn(prontuario, "\n")] = '\0';
-		
-		/*Validar login*/
-	    int pos = buscaBinariaArquivo("USUARIOS.DAT", nome, prontuario);
-	    if (pos == -1) {
-	        printf("\nUsuário ou prontuário inválido!\n");
-	        tent = tent - 1;
-	        getchar();
-	        if (tent == 0) return -1;
-	    } else {
-	        printf("\nLogin bem-sucedido!\n"); break;
-		}
-	}	    
-
-/* 3º Exibir Menu do sistema*/
-	sleep(1);  /*Para sistemas UNIX-like*/
-    /*Sleep(2000); /*Para sistemas Windows*/
-	do
-	{
-		op = menu();
-		gerenciar(op);
-	}
-	 while ( op!='0' );
-	
-	return 0;
-}
-
