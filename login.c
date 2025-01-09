@@ -7,6 +7,10 @@
 #include <unistd.h> /*Ou windows.h para Windows, uso da função Sleep*/
 
 /*Constantes*/
+#define MAX 100        // Tamanho maximo do nome e descricão
+#define TAM_PILHA 5    // Tamanho maximo de lista_itens por prateleira
+#define MAX_STR 50    // Tamanho maximo para o nome e descricão de cada item
+#define TAM_CARRINHO 50 // Capacidade do carrinho
 #define TOTPROFS 30
 /*Tipos pré-definidos pelo programador*/
 typedef struct
@@ -15,8 +19,38 @@ typedef struct
 	char pront [10];
 } reg;
 
+typedef struct 
+{
+    char nome[MAX_STR];     // Nome do item
+    char descri[MAX_STR];   // Descricao do item
+    float preco;            // Preco do item
+    float peso;             // Peso do item
+    int quantidade;
+	             
+}Item;
+
+typedef struct 
+{
+    Item lista_itens[TAM_PILHA];  // Array de itens na prateleira
+    int topo;               // Índice do topo da prateleira
+} Prateleira;
+
+// Estrutura do carrinho
+typedef struct {
+    Item itens[TAM_CARRINHO];
+    int topo;
+} Carrinho;
+
 /*Variáveis Global*/
 char op;
+Prateleira gandulas[10];  // 10 gandulas, cada uma com uma prateleira
+Item item;                // Item a ser empilhado
+int opcao;
+int prateleira;
+int opgerenciar;
+Carrinho carrinho;
+int opcao, prateleira, posicao, quantidade;
+int opcompras;
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
@@ -29,10 +63,31 @@ void removerUsuario(char *arquivo);
 void novoUsuario(char *arquivo);
 int compararRegistros(const reg *a, const reg *b);
 void inicializar (void);
+void inicializarPrateleira(Prateleira* p);
+int prateleiraCheia(Prateleira* p);
+int empilhar(Prateleira* p, Item lista_itens);
+void exibirPrateleira(Prateleira* p, int gandula);
+Item lerProduto();
+int retirarItem(Prateleira* p, Carrinho* carrinho, int posicao, int quantidade);
+void inicializarCarrinho(Carrinho* c);
+int carrinhoCheio(Carrinho* c);
+int empilharCarrinho(Carrinho* c, Item item);
+void exibirCarrinho(Carrinho* c);
 
 /*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
 	
+	int ini ;
+    for (ini = 0; ini < 10; ini++) {
+        inicializarPrateleira(&gandulas[ini]);
+    }
+    
+
+	int it;
+    for ( it= 0; it < 10; it++) {
+        inicializarPrateleira(&gandulas[it]);
+    }
+    
 	int i =0;
 
 	setlocale(LC_ALL, "Portuguese"); /*Definir padrão da língua e não precisar usar tabela ASCII*/
@@ -211,9 +266,9 @@ char    menu ()
 	do
 	{
    	 system ("cls");
-   	 printf ("\n========== MENU ==========");
-   	 printf ("\n1. Abastecer Gôndolas  ");
-   	 printf ("\n2. Caixa/PDV   	");
+   	 printf ("\n========== MENU ==========  ");
+   	 printf ("\n1. Administrar Gôndolas     ");
+   	 printf ("\n2. Caixa/PDV   		");
    	 printf ("\n3. Gerenciar Usuários 	");
    	 printf ("\n0. Sair             	");
    	 printf ("\n==========================");
@@ -229,35 +284,169 @@ void gerenciar (char E)
 {
    switch (E)
    {
-  		 case '1': printf ("\n\nEm desenvolvimento..."); getch(); break;
-  		 case '2': printf ("\n\nEm desenvolvimento..."); getch(); break;
-  		 case '3': 	{char voltar;
-  		 
-  		 			do
-					   {
-	  		 			system ("cls");
-	  					printf("Gerenciar Usuários\n");
-	  		 	  		printf("\n1 - Cadastrar Usuário\n");
-			            printf("2 - Remover Usuário\n");
-			            printf("3 - Exibir Usuários\n");
-			            printf("4 - Restaurar padrão\n");
-			            printf("5 - Voltar ao menu\n");
-			            printf("Escolha uma opção: ");
-			            op = getche();
-			            
-						switch (op) {
-					                case '1': novoUsuario("USUARIOS.DAT"); getch(); break;
-					                case '2': removerUsuario("USUARIOS.DAT"); getch(); break;
-					                case '3': exibirUsuarios("USUARIOS.DAT"); getch(); break;
-					                case '4':{ 	reg padrao [TOTPROFS];
-												cadastroDefault(padrao); 
-												printf("\nPadrão de usuários restaurado"); getch(); 
-											} break;
-					                case '5': break;    
-					                default: printf("\nOpção inválida.\n"); getche(); break;
-		   							}  
-						} while (op != '5'); break;	
-           			}
+  		 case '1':
+    system("cls");
+    do {
+        printf("\n=============================");
+        printf("\nMenu repositor:\n");
+        printf("1 - Adicionando produtos\n");
+        printf("2 - Mostrar gondulas\n");
+        printf("3 - Voltar\n");
+        printf("\n=============================\n");
+
+        printf("Escolha uma opção: ");
+        scanf("%d", &opgerenciar);
+
+        switch (opgerenciar) {
+            case 1:
+                system("cls");
+                printf("\n------ Adicionando produtos ------\n");
+                printf("Escolha a gandula (0 a 9): ");
+                scanf("%d", &prateleira);
+                getchar(); // Limpar o buffer do stdin
+
+                if (prateleira < 0 || prateleira > 9) {
+                    printf("Gândula inválida!\n");
+                    break;
+                }
+
+                // Ler o produto do usuário
+                item = lerProduto();
+
+                // Empilhar o item na prateleira da gândula escolhida
+                if (empilhar(&gandulas[prateleira], item)) {
+                    printf("Produto adicionado com sucesso na gândula %d!\n", prateleira);
+                }
+                getch();
+                break;
+
+            case 2:
+                printf("\n------ Exibindo ------\n");
+                printf("Escolha a gândula para exibir (0 a 9): ");
+                scanf("%d", &prateleira);
+                getchar(); // Limpar o buffer do stdin
+
+                if (prateleira < 0 || prateleira > 9) {
+                    printf("Gândula inválida!\n");
+                    break;
+                }
+
+                // Exibir os produtos da prateleira
+                exibirPrateleira(&gandulas[prateleira], prateleira);
+                getch();
+                break;
+
+            case 3:
+                printf("Voltando ao menu anterior...\n");
+                break;
+
+            default:
+                printf("Opção inválida!\n");
+                break;
+        }
+    } while (opgerenciar != 3);
+    break;
+
+case '2':
+    system("cls");
+    do {
+        printf("\n=============================");
+        printf("\nMenu de compras:\n");
+        printf("1 - Retirando produto para o carrinho\n");
+        printf("2 - Exibindo carrinhos\n");
+        printf("3 - Voltar\n");
+        printf("\n=============================\n");
+
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcompras);
+
+        switch (opcompras) {
+            case 1:
+                printf("Escolha a gândula (0 a 9): ");
+                scanf("%d", &prateleira);
+                getchar();
+
+                if (prateleira < 0 || prateleira > 9 || prateleiraVazia(&gandulas[prateleira])) {
+                    printf("Gândula inválida ou vazia!\n");
+                    break;
+                }
+
+                exibirPrateleira(&gandulas[prateleira], prateleira);
+
+                printf("Escolha a posição do item (1 a %d): ", gandulas[prateleira].topo + 1);
+                scanf("%d", &posicao);
+                getchar();
+
+                printf("Digite a quantidade a retirar: ");
+                scanf("%d", &quantidade);
+                getchar();
+
+                retirarItem(&gandulas[prateleira], &carrinho, posicao - 1, quantidade);
+                getch();
+                break;
+
+            case 2:
+                exibirCarrinho(&carrinho);
+                getch();
+                break;
+
+            case 3:
+                printf("Voltando ao menu anterior...\n");
+                break;
+
+            default:
+                printf("Opção inválida!\n");
+                break;
+        }
+    } while (opcompras != 3);
+    break;
+
+case '3':
+    do {
+        system("cls");
+        printf("\nGerenciar Usuários\n");
+        printf("\n1 - Cadastrar Usuário\n");
+        printf("2 - Remover Usuário\n");
+        printf("3 - Exibir Usuários\n");
+        printf("4 - Restaurar padrão\n");
+        printf("5 - Voltar\n");
+        printf("Escolha uma opção: ");
+        op = getche();
+
+        switch (op) {
+            case '1':
+                novoUsuario("USUARIOS.DAT");
+                getch();
+                break;
+
+            case '2':
+                removerUsuario("USUARIOS.DAT");
+                getch();
+                break;
+
+            case '3':
+                exibirUsuarios("USUARIOS.DAT");
+                getch();
+                break;
+
+            case '4': {
+                reg padrao[TOTPROFS];
+                cadastroDefault(padrao);
+                printf("\nPadrão de usuários restaurado");
+                getch();
+            } break;
+
+            case '5':
+                printf("Voltando ao menu anterior...\n");
+                break;
+
+            default:
+                printf("\nOpção inválida.\n");
+                getche();
+                break;
+        }
+    } while (op != '5');
+    break;
    	 	 
 		case '0':  exit(0);     	 break;
    }    
@@ -503,3 +692,161 @@ void inicializar (void){
 int compararRegistros(const reg *a, const reg *b) {
     return (strcmp(a->nome, b->nome) == 0 && strcmp(a->pront, b->pront) == 0);
 }        
+
+// Funcao para inicializar a prateleira
+void inicializarPrateleira(Prateleira* p) {
+    p->topo = -1;  // A prateleira comeca vazia, simolizando apenas que o valor é nenhum.
+}
+
+// Funcao para verificar se a prateleira esta cheia
+int prateleiraCheia(Prateleira* p) {
+    // Verifica se o topo da prateleira atingiu o limite
+    if (p->topo == TAM_PILHA - 1) {
+        return 1;  // Verdadeiro, está cheia
+    }
+    return 0;  // Falso, ainda há espaço
+}
+
+// Funcao que empilha um item na prateleira
+int empilhar(Prateleira* p, Item novo_item) 
+{
+    if (prateleiraCheia(p)) 
+	{
+        printf("A prateleira esta cheia! Nao é possível adicionar mais itens.\n");
+        return 0;  // Falha
+    }
+    p->topo++; // Incrementa 1 para o topo.  ex: se tivesse no 0, o topo seria 1 agora
+    p->lista_itens[p->topo] = novo_item;  // Adiciona o item no topo da prateleira e na posicao que o topo foi incrementado
+    return 1;  // Sucesso
+}
+
+void exibirPrateleira(Prateleira* p, int gandula) {
+    if (p->topo == -1) 
+	{
+        printf("A prateleira esta vazia!\n");
+        getch();
+        return;
+    }
+    printf("Itens na gandula %d:\n", gandula);
+    
+    int i;
+    for ( i = 0; i <= p->topo; i++) 
+	{
+        printf("--- Posicao %d ---\n", i + 1);  // Posicao 1 a 5
+        printf("Nome: %s      \n", p->lista_itens[i].nome);
+        printf("Descricao: %s \n", p->lista_itens[i].descri);
+        printf("Preco: %.2f   \n", p->lista_itens[i].preco);
+        printf("Peso: %.2f    \n", p->lista_itens[i].peso);
+        printf("-----------------\n");
+    }
+	getch();
+}
+
+Item lerProduto() 
+{
+    Item item;
+    printf("Digite o nome do produto: ");
+    fgets(item.nome, MAX_STR, stdin);
+    item.nome[strcspn(item.nome, "\n")] = '\0';  // Remover o \n do final da string
+
+    printf("Digite a descricao do produto: ");
+    fgets(item.descri, MAX_STR, stdin);
+    item.descri[strcspn(item.descri, "\n")] = '\0';  // Remover a \n do final da string
+
+    printf("Digite o preco do produto: ");
+    scanf("%f", &item.preco);
+
+    printf("Digite o peso do produto: ");
+    scanf("%f", &item.peso);
+    getchar();  // Limpar o buffer do teclado
+    
+    printf("Digite a quantidade disponível: ");
+    scanf("%d", &item.quantidade);
+    getchar();  // Limpar o buffer do stdin
+
+    return item;
+}
+
+int retirarItem(Prateleira* p, Carrinho* carrinho, int posicao, int quantidade) {
+    if (prateleiraVazia(p)) {
+        printf("A prateleira está vazia!\n");
+        return 0;
+    }
+    if (posicao < 0 || posicao > p->topo) {
+        printf("Posição inválida!\n");
+        return 0;
+    }
+    if (p->lista_itens[posicao].quantidade < quantidade) {
+        printf("Quantidade insuficiente! Disponível: %d\n", p->lista_itens[posicao].quantidade);
+        return 0;
+    }
+
+    // Atualizar a quantidade na prateleira
+    p->lista_itens[posicao].quantidade -= quantidade;
+
+    // Adicionar ao carrinho
+    Item itemParaCarrinho = p->lista_itens[posicao];
+    itemParaCarrinho.quantidade = quantidade;
+    empilharCarrinho(carrinho, itemParaCarrinho);
+
+    printf("Você retirou %d unidades do item '%s'.\n", quantidade, p->lista_itens[posicao].nome);
+
+    // Remove o item se a quantidade chegar a 0
+    if (p->lista_itens[posicao].quantidade == 0) {
+    char nomeRemovido[MAX_STR];  // Variável para armazenar o nome do item removido
+    strcpy(nomeRemovido, p->lista_itens[posicao].nome);  // Copiar o nome do item antes de removê-lo
+
+    // Ajustar os itens restantes na prateleira
+	int i;
+    for ( i= posicao; i < p->topo; i++) {
+        p->lista_itens[i] = p->lista_itens[i + 1];
+    }
+    p->topo--;
+
+    // Exibir mensagem correta
+    printf("O item '%s' foi removido da prateleira.\n", nomeRemovido);
+}
+
+
+    return 1;
+}
+
+void inicializarCarrinho(Carrinho* c) {
+    c->topo = -1;
+}
+
+int carrinhoCheio(Carrinho* c) {
+    return c->topo == TAM_CARRINHO - 1;
+}
+
+int empilharCarrinho(Carrinho* c, Item item) {
+    if (carrinhoCheio(c)) {
+        printf("O carrinho está cheio! Não é possível adicionar mais itens.\n");
+        return 0;
+    }
+    c->topo++;
+    c->itens[c->topo] = item;
+    printf("Item '%s' adicionado ao carrinho!\n", item.nome);
+    return 1;
+}
+
+void exibirCarrinho(Carrinho* c) {
+    if (c->topo == -1) {
+        printf("O carrinho está vazio!\n");
+        return;
+    }
+    printf("Itens no carrinho:\n");int i;
+    for ( i= 0; i <= c->topo; i++) {
+        printf("--- Item %d ---\n", i + 1);
+        printf("Nome: %s\n", c->itens[i].nome);
+        printf("Descrição: %s\n", c->itens[i].descri);
+        printf("Preço: %.2f\n", c->itens[i].preco);
+        printf("Peso: %.2f\n", c->itens[i].peso);
+        printf("Quantidade: %d\n", c->itens[i].quantidade);
+        printf("\n");
+    }
+}
+
+int prateleiraVazia(Prateleira* p) {
+    return p->topo == -1;
+}
