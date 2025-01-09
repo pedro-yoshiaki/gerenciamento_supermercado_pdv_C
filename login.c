@@ -143,7 +143,7 @@ void cadastroDefault (reg * vet)
 	    fwrite(&vet[i], sizeof(reg), 1, Arq);
 		}
 	}
-	fclose(Arq);    
+	fclose(Arq);
 }
 
 void bubbleSort(reg arr[], int n) { /*n = tamanho do vetor*/
@@ -247,7 +247,8 @@ void gerenciar (char E)
 	  		 	  		printf("\n1 - Cadastrar Usuário\n");
 			            printf("2 - Remover Usuário\n");
 			            printf("3 - Exibir Usuários\n");
-			            printf("4 - Voltar ao menu\n");
+			            printf("4 - Restaurar padrão\n");
+			            printf("5 - Voltar ao menu\n");
 			            printf("Escolha uma opção: ");
 			            op = getche();
 			            
@@ -255,12 +256,21 @@ void gerenciar (char E)
 					                case '1': novoUsuario("USUARIOS.DAT"); getch(); break;
 					                case '2': removerUsuario("USUARIOS.DAT"); getch(); break;
 					                case '3': exibirUsuarios("USUARIOS.DAT"); getch(); break;
-					                case '4': break;    
-					                default: printf("Opção inválida.\n"); break;
+					                case '4':{ 	reg *padrao = malloc(TOTPROFS * sizeof(reg)); // Alocação dinâmica do vetor
+											    if (padrao == NULL) {
+											        printf("Erro: Malloc devolveu NULL.\n");
+											        exit(1); // Finaliza o programa
+											    }
+									cadastroDefault(padrao); 
+									printf("\nPadrão de usuários restaurado"); getch(); 
+									} break;
+					                case '5': break;    
+					                default: printf("\nOpção inválida.\n"); getche(); break;
 		   							}  
-						} while (op != '4'); break;	
+						} while (op != '5'); break;	
            			}
-   	 	 case '0':  exit(0);     	 break;
+   	 	 
+		case '0':  exit(0);     	 break;
    }    
 }
 
