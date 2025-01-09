@@ -22,32 +22,25 @@ typedef struct
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
 void bubbleSort(reg arr[], int n);
-int buscaBinaria(reg *vet, int n, char *nome, char *prontuario);
 int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario);
 char    menu ();
 void gerenciar (char E);
 void exibirUsuarios(char *arquivo);
 void removerUsuario(char *arquivo);
 void novoUsuario(char *arquivo);
+int compararRegistros(const reg *a, const reg *b);
+void inicializar (void);
 
-/*Corpo do programa*/
+/*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
 	
-	reg *professores = malloc(TOTPROFS * sizeof(reg)); // Alocação dinâmica do vetor
-    if (professores == NULL) {
-        printf("Erro: Malloc devolveu NULL.\n");
-        exit(1); // Finaliza o programa
-    }
 	int i =0;
 
 	setlocale(LC_ALL, "Portuguese"); /*Definir padrão da língua e não precisar usar tabela ASCII*/
 	
-/*1º Cadastrar os usuários padrão*/	
-	/*cadastroDefault (professores);*/
-	
- /*for (i = 0; i < TOTPROFS; i++) {
-        printf("Nome: %s, Prontuario: %s\n", professores[i].nome, professores[i].pront);
-    }*/
+/*1º Inicializar o programa e confirmar se os usuários padrão estão no arquivo .dat*/	
+/*Se não existir o .dat ele vai avisar que USUARIOS.DAT é inexistente e em seguida criará um*/
+	inicializar(); 
 
 /*2º Capturar o login do usuário*/
 	int tent = 3;
@@ -87,6 +80,7 @@ int main (){
 	
 	return 0;
 }
+/*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Funções*/
 void cadastroDefault (reg * vet)
@@ -185,7 +179,7 @@ int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario) {
     // Alocar memória para armazenar todos os registros
     vet = (reg *)malloc(tamanho * sizeof(reg));
     if (vet == NULL) {
-        printf("Erro ao alocar memória\n");
+        printf("malloc devolveu NULL\n");
         fclose(Arq);
         return -1;
     }
@@ -404,3 +398,113 @@ void novoUsuario(char *arquivo) {
 
     printf("Novo usuário cadastrado com sucesso e arquivo atualizado!\n");
 }
+
+void inicializar (void){
+	FILE * Arq;
+	int tamanho, i, j;
+	reg * vet;
+	
+	Arq = fopen("USUARIOS.DAT", "rb"); /*Leitura binária*/
+    if (Arq == NULL) {
+        printf("ARQUIVO USUARIOS.DAT INEXISTENTE\n");
+        printf("\nCriando novo arquivo padrão...\n");
+        getche();
+        reg vet [TOTPROFS];
+        cadastroDefault(vet);
+        return;
+    } else{
+    
+    	// Determinar o tamanho do arquivo para saber quantos registros existem
+    fseek(Arq, 0, SEEK_END);
+    tamanho = ftell(Arq) / sizeof(reg); // Quantidade de registros
+    rewind(Arq);
+
+    // Alocar memória para armazenar todos os registros
+    vet = (reg *)malloc(tamanho * sizeof(reg));
+    if (vet == NULL) {
+        printf("Erro ao alocar memória\n");
+        fclose(Arq);
+    }
+
+    // Ler todos os registros do arquivo para o vetor
+    fread(vet, sizeof(reg), tamanho, Arq);
+    fclose(Arq);
+
+    
+    reg *inicio = malloc(TOTPROFS * sizeof(reg));
+	    if (inicio == NULL) {
+		printf("Erro: Malloc devolveu NULL.\n");
+		free(vet);
+		}
+    
+	strcpy (inicio[0].nome,"Domingos Lucas Latorre de Oliveira"); strcpy (inicio[0].pront,"CJ146456"); /*strcpy = string copy, copiar o nome e colocar no vetor na posição inicial*/ 
+	strcpy (inicio[1].nome,"Leandro Pinto Santana"); strcpy (inicio[1].pront,"CP220383");
+	strcpy (inicio[2].nome,"Rodrigo Ribeiro de Oliveira"); strcpy (inicio[2].pront,"RG134168");
+	strcpy (inicio[3].nome,"Andre Luiz da Silva"); strcpy (inicio[3].pront,"SP030028");
+	strcpy (inicio[4].nome,"Claudia Miyuki Werhmuller"); strcpy (inicio[4].pront,"SP030041");
+	strcpy (inicio[5].nome,"Claudete de Oliveira Alves"); strcpy (inicio[5].pront,"SP03020X");
+	strcpy (inicio[6].nome,"Francisco Verissimo Luciano"); strcpy (inicio[6].pront,"SP030247");
+	strcpy (inicio[7].nome,"Luk Cho Man"); strcpy (inicio[7].pront,"SP060380");
+	strcpy (inicio[8].nome,"Ivan Francolin Martinez"); strcpy (inicio[8].pront,"SP060835");
+	strcpy (inicio[9].nome,"Joao Vianei Tamanini"); strcpy (inicio[9].pront,"SP060914");
+	strcpy (inicio[10].nome,"Jose Oscar Machado Alexandre"); strcpy (inicio[10].pront,"SP070038");
+	strcpy (inicio[11].nome,"Jose Braz de Araujo"); strcpy (inicio[11].pront,"SP070385");
+	strcpy (inicio[12].nome,"Paulo Roberto de Abreu"); strcpy (inicio[12].pront,"SP070816");
+	strcpy (inicio[13].nome,"Eurides Balbino da Silva"); strcpy (inicio[13].pront,"SP07102X");
+	strcpy (inicio[14].nome,"Domingos Bernardo Gomes Santos"); strcpy (inicio[14].pront,"SP090888");
+	strcpy (inicio[15].nome,"Andre Evandro Lourenco"); strcpy (inicio[15].pront,"SP100092");
+	strcpy (inicio[16].nome,"Miguel Angelo Tancredi Molina"); strcpy (inicio[16].pront,"SP102763");
+	strcpy (inicio[17].nome,"Antonio Airton Palladino"); strcpy (inicio[17].pront,"SP112197");
+	strcpy (inicio[18].nome,"Luis Fernando Aires Branco Menegueti"); strcpy (inicio[18].pront,"SP145385");
+	strcpy (inicio[19].nome,"Antonio Ferreira Viana"); strcpy (inicio[19].pront,"SP200827");
+	strcpy (inicio[20].nome,"Leonardo Bertholdo"); strcpy (inicio[20].pront,"SP204973");
+	strcpy (inicio[21].nome,"Marcelo Tavares de Santana"); strcpy (inicio[21].pront,"SP20500X");
+	strcpy (inicio[22].nome,"Wagner de Paula Gomes"); strcpy (inicio[22].pront,"SP215016");
+	strcpy (inicio[23].nome,"Daniel Marques Gomes de Morais"); strcpy (inicio[23].pront,"SP220097");
+	strcpy (inicio[24].nome,"Alexandre Beletti Ferreira"); strcpy (inicio[24].pront,"SP226117");
+	strcpy (inicio[25].nome,"Vladimir Camelo Pinto"); strcpy (inicio[25].pront,"SP240291");
+	strcpy (inicio[26].nome,"Leonardo Andrade Motta de Lima"); strcpy (inicio[26].pront,"SP24031X");
+	strcpy (inicio[27].nome,"Aldo Marcelo Paim"); strcpy (inicio[27].pront,"SP240497");
+	strcpy (inicio[28].nome,"Cesar Lopes Fernandes"); strcpy (inicio[28].pront,"SP890534");
+	strcpy (inicio[29].nome,"Josceli Maria Tenorio"); strcpy (inicio[29].pront,"SZ124382");
+    	
+	// Comparar e adicionar os itens faltantes de "inicio" em "vet"
+    
+    for (i = 0; i < TOTPROFS; i++) {
+        int encontrado = 0;
+        for (j = 0; j < tamanho; j++) {
+            if (compararRegistros(&inicio[i], &vet[j])) {
+                encontrado = 1;
+                break;
+            }
+        }
+        if (!encontrado) { /*se encontrado for 0*/
+            vet = realloc(vet, (tamanho + 1) * sizeof(reg));
+            if (vet == NULL) {
+                printf("Erro ao alocar memória\n");
+                exit(1);
+            }
+            vet[tamanho] = inicio[i];
+            (tamanho)++;
+        }
+    }
+    
+    bubbleSort (vet, tamanho);
+
+    // Salvar os registros atualizados de "vet" de volta ao arquivo
+    Arq = fopen("USUARIOS.DAT", "wb");
+    if (Arq == NULL) {
+        printf("Erro ao abrir arquivo para escrita\n");
+    } else {
+        fwrite(vet, sizeof(reg), tamanho, Arq);
+        fclose(Arq);
+    }
+     free(inicio);
+	}
+    // Liberar memória alocada
+    free(vet);   
+}
+
+int compararRegistros(const reg *a, const reg *b) {
+    return (strcmp(a->nome, b->nome) == 0 && strcmp(a->pront, b->pront) == 0);
+}    
