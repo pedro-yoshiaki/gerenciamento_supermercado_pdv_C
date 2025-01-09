@@ -8,9 +8,6 @@
 
 /*Constantes*/
 #define TOTPROFS 30
-/*Variáveis Global*/
-char op;
-
 /*Tipos pré-definidos pelo programador*/
 typedef struct
 {
@@ -18,6 +15,8 @@ typedef struct
 	char pront [10];
 } reg;
 
+/*Variáveis Global*/
+char op;
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
