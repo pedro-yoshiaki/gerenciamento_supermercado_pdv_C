@@ -8,6 +8,9 @@
 
 /*Constantes*/
 #define TOTPROFS 30
+/*Variáveis Global*/
+char op;
+
 /*Tipos pré-definidos pelo programador*/
 typedef struct
 {
@@ -15,8 +18,6 @@ typedef struct
 	char pront [10];
 } reg;
 
-/*Variáveis Global*/
-char op;
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
@@ -211,12 +212,12 @@ char    menu ()
 	do
 	{
    	 system ("cls");
-   	 printf ("\n========== MENU ==========");
+   	 printf ("\n====== MENU PRINCIPAL ======");
    	 printf ("\n1. Abastecer Gôndolas  ");
    	 printf ("\n2. Caixa/PDV   	");
    	 printf ("\n3. Gerenciar Usuários 	");
    	 printf ("\n0. Sair             	");
-   	 printf ("\n==========================");
+   	 printf ("\n============================");
    	 printf ("\n   Escolha opção: ");
    	 fflush (stdin);
    	 op = getche();
@@ -236,12 +237,13 @@ void gerenciar (char E)
   		 			do
 					   {
 	  		 			system ("cls");
-	  					printf("Gerenciar Usuários\n");
+	  					printf("\n====== GERENCIAR USUÁRIOS ======");
 	  		 	  		printf("\n1 - Cadastrar Usuário\n");
 			            printf("2 - Remover Usuário\n");
 			            printf("3 - Exibir Usuários\n");
 			            printf("4 - Restaurar padrão\n");
-			            printf("5 - Voltar ao menu\n");
+			            printf("5 - Voltar ao menu principal");
+			            printf ("\n===============================\n");
 			            printf("Escolha uma opção: ");
 			            op = getche();
 			            
@@ -273,10 +275,11 @@ void exibirUsuarios(char *arquivo) {
         return;
     }
 
-    printf("\nLista de Usuários:\n\n");
+    printf("\n\n======================= LISTA DE USUÁRIOS =======================\n\n");
     while (fread(&usuario, sizeof(reg), 1, Arq)) {
         printf("Nome: %s | Prontuário: %s\n", usuario.nome, usuario.pront);
     }
+    printf("=================================================================\n");
     fclose(Arq);
 }
 
@@ -391,7 +394,7 @@ void novoUsuario(char *arquivo) {
     fclose(Arq);
     free(vet);
 
-    printf("Novo usuário cadastrado com sucesso e arquivo atualizado!\n");
+    printf("\nNovo usuário cadastrado com sucesso e arquivo atualizado!\n");
 }
 
 void inicializar (void){
