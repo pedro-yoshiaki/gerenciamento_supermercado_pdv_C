@@ -295,7 +295,6 @@ void gerenciar (char E)
 					   {
 	  		 			system ("cls");
 	  					printf("\n====== GERENCIAR USUÁRIOS ======");
-	  					;
 	  		 	  		printf("\n1 - Cadastrar Usuário\n");
 			            printf("2 - Remover Usuário\n");
 			            printf("3 - Exibir Usuários\n");
