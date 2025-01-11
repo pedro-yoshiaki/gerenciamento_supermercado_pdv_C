@@ -9,7 +9,7 @@
 /*Constantes*/
 #define TOTPROFS 30
 #define MAX_ITENS 5
-#define NUM_GONDOLAS 10
+#define NUM_PRATELEIRAS 10
 
 /*Tipos pré-definidos pelo programador*/
 typedef struct
@@ -34,6 +34,7 @@ typedef struct {
 
 /*Variáveis Global*/
 char op;
+PilhaEstatica prateleiras[10]; 
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
@@ -47,7 +48,8 @@ void novoUsuario(char *arquivo);
 int compararRegistros(const reg *a, const reg *b);
 void inicializar (void);
 int validarSenhaMaster(void);
-
+void inicializarPilha(PilhaEstatica prateleiras[], int numPrateleiras);
+void status(PilhaEstatica prateleiras[], int numPrateleiras);
 /*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
 	
@@ -85,9 +87,12 @@ int main (){
 		}
 	}	    
 
-/* 3º Exibir Menu do sistema*/
+/* 3º Exibir Menu do sistema e inicializar as prateleiras*/
 	sleep(1);  /*Para sistemas UNIX-like*/
     /*Sleep(2000); /*Para sistemas Windows*/
+    
+	inicializarPilha(prateleiras, NUM_PRATELEIRAS);
+	
 	do
 	{
 		op = menu();
@@ -100,6 +105,126 @@ int main (){
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
 /*Funções*/
+char    menu ()
+{
+	do
+	{
+   	 system ("cls");
+   	 printf ("\n====== MENU PRINCIPAL ======");
+   	 printf ("\n1. Abastecer Gôndolas  ");
+   	 printf ("\n2. Caixa/PDV   	");
+   	 printf ("\n3. Gerenciar Usuários 	");
+   	 printf ("\n0. Sair             	");
+   	 printf ("\n============================");
+   	 printf ("\n   Escolha opção: ");
+   	 fflush (stdin);
+   	 op = getche();
+    }
+    while ( op < '0' || op > '3' );
+    return (op);
+}
+
+void gerenciar (char E)
+{
+   switch (E)
+   	{
+  		 case '1': 	{int opgerenciar;
+					do	{
+						system("cls");
+						printf("\n============ ADMINISTRAR GÔNDOLA ============\n");
+						printf("1 - Abastecer prateleiras (Usuário Master)\n");
+						printf("2 - Adicionar produtos ao carrinho\n");
+						printf("3 - Exibir prateleiras\n");
+						printf("4 - Voltar ao menu principal");
+						printf("\n=============================================\n");							
+						printf("Escolha uma opção: ");
+						opgerenciar = getche();
+						
+						switch(opgerenciar){
+											case '1': {
+														do
+														   {
+										  		 			system ("cls");
+										  					printf("\n========== Menu repositor ==========");
+										  		 	  		printf("\n1 - Acessar (APENAS USUÁRIO MASTER)\n");
+												            printf("2 - Voltar ao menu principal");
+												            printf("\n====================================\n");
+												            printf("Escolha uma opção: ");
+												            opgerenciar = getche();
+														
+															switch (opgerenciar){
+																		case '1': 	if (validarSenhaMaster() == 1) {
+																					
+																					do{	
+																						system ("cls");																				
+																						printf("\n============ MENU REPOSITOR ============");
+																	  		 	  		printf("\n1 - Adicionar produtos\n");
+																			            printf("2 - Exibir gôndula");
+																			            printf("\n========================================\n");
+																			            status(prateleiras, NUM_PRATELEIRAS);
+																						printf ("\nPressione '0' para voltar\n\n");
+																						opgerenciar = getche();
+																						
+																						switch (opgerenciar){
+																											case '1': printf ("\nEm desenvolvimento..."); getchar (); break;
+																											case '2': printf ("\nEm desenvolvimento..."); getchar (); break;
+																											case '0': break;
+																											default: printf("\nOpção inválida.\n"); getche(); break;																							
+																											}
+																					} while (opgerenciar != '0'); break;
+																					
+																					
+																					
+																					
+																					
+																					}
+																					else exit (0); break;  
+																		case '2': return; break; 
+												                		default: printf("\nOpção inválida.\n"); getche(); break;
+						   												}  
+															} while (op != '2'); break;												
+														}					
+											case '2': printf ("\nEm desenvolvimento..."); getchar(); break;
+											case '3': printf ("\nEm desenvolvimento..."); getchar(); break;
+											case '4': break;
+											default: printf("\nOpção inválida.\n"); getche(); break;
+											}
+		   				}while (opgerenciar != '4'); break;
+		   			}
+  		 case '2': 	printf ("\n\nEm desenvolvimento..."); getch(); break;
+  		 case '3': 	{char voltar;
+  		 
+  		 			do
+					   {
+	  		 			system ("cls");
+	  					printf("\n====== GERENCIAR USUÁRIOS ======");
+	  		 	  		printf("\n1 - Cadastrar Usuário\n");
+			            printf("2 - Remover Usuário\n");
+			            printf("3 - Exibir Usuários\n");
+			            printf("4 - Restaurar padrão\n");
+			            printf("5 - Voltar ao menu principal");
+			            printf("\n================================\n");
+			            printf("Escolha uma opção: ");
+			            op = getche();
+			            
+						switch (op) {
+					                case '1': novoUsuario("USUARIOS.DAT"); getch(); break;
+					                case '2': removerUsuario("USUARIOS.DAT"); getch(); break;
+					                case '3': exibirUsuarios("USUARIOS.DAT"); getch(); break;
+					                case '4':{ 	reg padrao [TOTPROFS];
+												cadastroDefault(padrao); 
+												printf("\nPadrão de usuários restaurado"); getch(); 
+											} break;
+					                case '5': break;    
+					                default: printf("\nOpção inválida.\n"); getche(); break;
+		   							}  
+						} while (op != '5'); break;	
+           			}
+   	 	 
+		case '0':  exit(0); break;    
+	}
+}
+
 void cadastroDefault (reg * vet)
 {
 	FILE * Arq;
@@ -222,104 +347,6 @@ int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario) {
 
     free(vet); // Liberar memória antes de retornar
     return -1; // Usuário não encontrado
-}
-
-char    menu ()
-{
-	do
-	{
-   	 system ("cls");
-   	 printf ("\n====== MENU PRINCIPAL ======");
-   	 printf ("\n1. Abastecer Gôndolas  ");
-   	 printf ("\n2. Caixa/PDV   	");
-   	 printf ("\n3. Gerenciar Usuários 	");
-   	 printf ("\n0. Sair             	");
-   	 printf ("\n============================");
-   	 printf ("\n   Escolha opção: ");
-   	 fflush (stdin);
-   	 op = getche();
-    }
-    while ( op < '0' || op > '3' );
-    return (op);
-}
-
-void gerenciar (char E)
-{
-   switch (E)
-   	{
-  		 case '1': 	{int opgerenciar;
-					do	{
-						system("cls");
-						printf("\n============ ADMINISTRAR GÔNDOLA ============\n");
-						printf("1 - Abastecer prateleiras (Usuário Master)\n");
-						printf("2 - Adicionar produtos ao carrinho\n");
-						printf("3 - Exibir prateleiras\n");
-						printf("4 - Voltar ao menu principal");
-						printf("\n=============================================\n");							
-						printf("Escolha uma opção: ");
-						opgerenciar = getche();
-						
-						switch(opgerenciar){
-											case '1': {
-														do
-														   {
-										  		 			system ("cls");
-										  					printf("\n======= Menu repositor =======");
-										  		 	  		printf("\n1 - Senha Usuário Master\n");
-												            printf("2 - Voltar ao menu principal");
-												            printf("\n==============================\n");
-												            printf("Escolha uma opção: ");
-												            opgerenciar = getche();
-														
-															switch (opgerenciar){
-																		case '1': 	if (validarSenhaMaster() == 1) {
-																					printf ("\nEm desenvolvimento..."); getchar(); break;	
-																					}
-																					else exit (0); break;  
-																		case '2': return; break; 
-												                		default: printf("\nOpção inválida.\n"); getche(); break;
-						   												}  
-															} while (op != '2'); break;												
-														}					
-											case '2': printf ("\nEm desenvolvimento..."); getchar(); break;
-											case '3': printf ("\nEm desenvolvimento..."); getchar(); break;
-											case '4': break;
-											default: printf("\nOpção inválida.\n"); getche(); break;
-											}
-		   				}while (opgerenciar != '4'); break;
-		   			}
-  		 case '2': 	printf ("\n\nEm desenvolvimento..."); getch(); break;
-  		 case '3': 	{char voltar;
-  		 
-  		 			do
-					   {
-	  		 			system ("cls");
-	  					printf("\n====== GERENCIAR USUÁRIOS ======");
-	  		 	  		printf("\n1 - Cadastrar Usuário\n");
-			            printf("2 - Remover Usuário\n");
-			            printf("3 - Exibir Usuários\n");
-			            printf("4 - Restaurar padrão\n");
-			            printf("5 - Voltar ao menu principal");
-			            printf("\n================================\n");
-			            printf("Escolha uma opção: ");
-			            op = getche();
-			            
-						switch (op) {
-					                case '1': novoUsuario("USUARIOS.DAT"); getch(); break;
-					                case '2': removerUsuario("USUARIOS.DAT"); getch(); break;
-					                case '3': exibirUsuarios("USUARIOS.DAT"); getch(); break;
-					                case '4':{ 	reg padrao [TOTPROFS];
-												cadastroDefault(padrao); 
-												printf("\nPadrão de usuários restaurado"); getch(); 
-											} break;
-					                case '5': break;    
-					                default: printf("\nOpção inválida.\n"); getche(); break;
-		   							}  
-						} while (op != '5'); break;	
-           			}
-   	 	 
-		case '0':  exit(0); break;    
-	}
 }
 
 void exibirUsuarios(char *arquivo) {
@@ -587,4 +614,71 @@ int validarSenhaMaster(void) {
     }
 
     return 0; // Falha na autenticação
+}
+														
+void status(PilhaEstatica prateleiras[], int numPrateleiras) {
+	int i;
+    printf("\n======== STATUS DAS PRATELEIRAS ========\n");
+    for (i = 0; i < numPrateleiras; i++) {
+        int quantidadeItens = prateleiras[i].topo + 1; // topo + 1 indica quantidade de itens
+        printf("Prateleira %d: ", i + 1);
+        if (prateleiras[i].topo == -1) {
+            printf("Vazia (0/%d preenchidos)\n", MAX_ITENS);
+        } else if (prateleiras[i].topo == MAX_ITENS - 1) {
+            printf("Cheia (%d/%d preenchidos)\n", MAX_ITENS, MAX_ITENS);
+        } else {
+            printf("Parcial (%d/%d preenchidos)\n", quantidadeItens, MAX_ITENS);
+        }
+    }
+    printf("========================================\n");
+}	
+
+void inicializarPilha(PilhaEstatica prateleiras[], int numPrateleiras) {
+    // Inicializa todas as prateleiras
+    int j, i;
+    
+    for (i = 0; i < numPrateleiras; i++) {
+        prateleiras[i].topo = -1; // Define o topo como -1 para indicar pilha vazia
+        
+        // Zera os campos dos itens das prateleiras
+        for (j = 0; j < MAX_ITENS; j++) {
+            prateleiras[i].itens[j].nome[0] = '\0'; // Zera o nome
+            prateleiras[i].itens[j].descricao[0] = '\0'; // Zera a descrição
+            prateleiras[i].itens[j].peso = 0.0f; // Zera o peso
+            prateleiras[i].itens[j].preco = 0.0f; // Zera o preço
+        }
+    }
+}
+
+Produto lerProduto() {
+    Produto p;
+
+    printf("\nDigite o nome do produto: ");
+    fgets(p.nome, sizeof(p.nome), stdin); // Lê o nome com espaços
+    p.nome[strcspn(p.nome, "\n")] = '\0'; // Remove a quebra de linha
+
+    printf("Digite a descrição do produto: ");
+    fgets(p.descricao, sizeof(p.descricao), stdin); // Lê a descrição com espaços
+    p.descricao[strcspn(p.descricao, "\n")] = '\0'; // Remove a quebra de linha
+
+    printf("Digite o peso do produto (em kg): ");
+    scanf("%f", &p.peso);
+
+    printf("Digite o preço do produto (em R$): ");
+    scanf("%f", &p.preco);
+
+    // Limpar o buffer de entrada para evitar problemas com o fgets
+    while(getchar() != '\n');
+
+    return p;
+}
+
+void adicionarItem(PilhaEstatica *p, Produto produto) {
+    if (p->topo < MAX_ITENS - 1) {
+        p->topo++;
+        p->itens[p->topo] = produto; // Adiciona o produto no topo
+        printf("\nProduto '%s' adicionado à prateleira.\n", produto.nome);
+    } else {
+        printf("\nA prateleira está cheia! Não é possível adicionar o produto.\n");
+    }
 }
