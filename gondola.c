@@ -50,6 +50,11 @@ void inicializar (void);
 int validarSenhaMaster(void);
 void inicializarPilha(PilhaEstatica prateleiras[], int numPrateleiras);
 void status(PilhaEstatica prateleiras[], int numPrateleiras);
+Produto lerProduto(void);
+void adicionarItem(PilhaEstatica *p, Produto produto);
+int escolherPrateleira();
+void exibirGondula(PilhaEstatica* p, int gandula);
+
 /*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
 	
@@ -166,8 +171,18 @@ void gerenciar (char E)
 																						opgerenciar = getche();
 																						
 																						switch (opgerenciar){
-																											case '1': printf ("\nEm desenvolvimento..."); getchar (); break;
-																											case '2': printf ("\nEm desenvolvimento..."); getchar (); break;
+																											case '1': 	{																														
+																														int p = escolherPrateleira();
+																														Produto x = lerProduto();
+																														adicionarItem(&prateleiras[p], x);
+																														getch(); 
+																														} break;
+																											case '2': {	int c = escolherPrateleira();
+																														exibirGondula(&prateleiras[c], c); getchar (); break;
+																												
+																											}
+																											
+																											
 																											case '0': break;
 																											default: printf("\nOpção inválida.\n"); getche(); break;																							
 																											}
@@ -621,7 +636,7 @@ void status(PilhaEstatica prateleiras[], int numPrateleiras) {
     printf("\n======== STATUS DAS PRATELEIRAS ========\n");
     for (i = 0; i < numPrateleiras; i++) {
         int quantidadeItens = prateleiras[i].topo + 1; // topo + 1 indica quantidade de itens
-        printf("Prateleira %d: ", i + 1);
+        printf("Prateleira %d: ", i);
         if (prateleiras[i].topo == -1) {
             printf("Vazia (0/%d preenchidos)\n", MAX_ITENS);
         } else if (prateleiras[i].topo == MAX_ITENS - 1) {
@@ -650,24 +665,44 @@ void inicializarPilha(PilhaEstatica prateleiras[], int numPrateleiras) {
     }
 }
 
-Produto lerProduto() {
-    Produto p;
+Produto lerProduto(void) {
+	Produto p;
+    do {
+        printf("\nDigite o nome do produto: ");
+        fgets(p.nome, sizeof(p.nome), stdin); // Lê até o limite do buffer
+        p.nome[strcspn(p.nome, "\n")] = '\0'; // Remove a nova linha
+        if (strlen(p.nome) == 0) {
+            printf("Nome não pode ser vazio. Tente novamente.\n");
+        }
+    } while (strlen(p.nome) == 0);
 
-    printf("\nDigite o nome do produto: ");
-    fgets(p.nome, sizeof(p.nome), stdin); // Lê o nome com espaços
-    p.nome[strcspn(p.nome, "\n")] = '\0'; // Remove a quebra de linha
+    // Ler a descrição do produto e garantir que não seja deixado em branco
+        printf("Digite a descrição do produto: ");
+        fgets(p.descricao, sizeof(p.descricao), stdin); // Lê até o limite do buffer
+        p.descricao[strcspn(p.descricao, "\n")] = '\0'; // Remove a nova linha
+        
+// Ler o peso do produto e garantir que seja um número válido e maior que zero
+    do {
+        printf("Digite o peso do produto (em kg): ");        
+        // Verificar se a entrada é um número válido
+        if (scanf("%f", &p.peso) != 1) {
+            printf("Peso inválido. Tente novamente.\n");
+            while(getchar() != '\n'); // Limpar o buffer de entrada
+        } else if (&p.peso <= 0) {
+            printf("Peso deve ser maior que zero. Tente novamente.\n");
+        }
+    } while (&p.peso <= 0); // Continua pedindo até que o peso seja válido
 
-    printf("Digite a descrição do produto: ");
-    fgets(p.descricao, sizeof(p.descricao), stdin); // Lê a descrição com espaços
-    p.descricao[strcspn(p.descricao, "\n")] = '\0'; // Remove a quebra de linha
+    // Ler o preço do produto e garantir que seja um número válido
+    do {
+        printf("Digite o preço do produto (em R$): ");
+        if (scanf("%f", &p.preco) != 1) {
+            printf("Preço inválido. Tente novamente.\n");
+            while(getchar() != '\n'); // Limpar o buffer de entrada
+        }
+    } while (p.preco <= 0);
 
-    printf("Digite o peso do produto (em kg): ");
-    scanf("%f", &p.peso);
-
-    printf("Digite o preço do produto (em R$): ");
-    scanf("%f", &p.preco);
-
-    // Limpar o buffer de entrada para evitar problemas com o fgets
+    // Limpar o buffer de entrada de qualquer caractere residual
     while(getchar() != '\n');
 
     return p;
@@ -681,4 +716,55 @@ void adicionarItem(PilhaEstatica *p, Produto produto) {
     } else {
         printf("\nA prateleira está cheia! Não é possível adicionar o produto.\n");
     }
+}
+
+// Função para escolher a prateleira
+int escolherPrateleira() {
+    int prateleiraEscolhida;
+    char buffer[100];
+
+    while (1) {
+    	system ("cls");
+        printf("\nEscolha a prateleira (0 a 9): ");
+        fflush(stdin); // Limpa o buffer de entrada
+        if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+            // Verificar se o input contém apenas um número válido
+            if (sscanf(buffer, "%d", &prateleiraEscolhida) == 1) {
+                // Verificar se a escolha está dentro do intervalo válido
+                if (prateleiraEscolhida >= 0 && prateleiraEscolhida < NUM_PRATELEIRAS) {
+                    return prateleiraEscolhida;
+                } else {
+                    printf("\nOpção inválida! A prateleira deve ser entre 0 e 9.\n");
+                    getch();
+                }
+            } else {
+                printf("\nEntrada inválida! Por favor, digite um número.\n");
+                getch();
+            }
+        }
+    }
+}
+
+// Função para exibir a gondula (as prateleiras e seus itens)
+void exibirGondula(PilhaEstatica* p, int gandula) {
+	if (p->topo == -1) 
+		{
+	        printf("A prateleira esta vazia!\n");
+	        getch();
+	        return;
+	    }
+	    printf("Itens na prateleira %d:\n", gandula);
+	    printf("Topo = %d:\n", p->topo);
+	    
+	    int i;
+	    for ( i = 0; i < MAX_ITENS; i++) 
+		{
+	        printf("--- Posicao %d ---\n", i); 
+	        printf("Nome: %s      \n", p->itens[i].nome);
+	        printf("Descricao: %s \n", p->itens[i].descricao);
+	        printf("Preco: %.2f   \n", p->itens[i].preco);
+	        printf("Peso: %.2f    \n", p->itens[i].peso);
+	        printf("-----------------\n");
+	    }
+		getch();
 }
