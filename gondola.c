@@ -10,6 +10,7 @@
 #define TOTPROFS 30
 #define MAX_ITENS 5
 #define NUM_PRATELEIRAS 10
+#define TAM_CARRINHO 50
 
 /*Tipos pré-definidos pelo programador*/
 typedef struct
@@ -32,9 +33,16 @@ typedef struct {
     int topo; // Índice do último item
 } PilhaEstatica;
 
+// Estrutura do carrinho
+typedef struct {
+    Produto compras[TAM_CARRINHO];
+    int topo;
+} Carrinho;
+
 /*Variáveis Global*/
 char op;
 PilhaEstatica prateleiras[10]; 
+Carrinho carrinho;
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
@@ -54,6 +62,8 @@ Produto lerProduto(void);
 void adicionarItem(PilhaEstatica *p, Produto produto);
 int escolherPrateleira();
 void exibirGondula(PilhaEstatica* p, int gandula);
+void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras);
+void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras);
 
 /*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
@@ -97,6 +107,7 @@ int main (){
     /*Sleep(2000); /*Para sistemas Windows*/
     
 	inicializarPilha(prateleiras, NUM_PRATELEIRAS);
+	adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
 	
 	do
 	{
@@ -133,80 +144,85 @@ void gerenciar (char E)
 {
    switch (E)
    	{
-  		 case '1': 	{int opgerenciar;
-					do	{
-						system("cls");
-						printf("\n============ ADMINISTRAR GÔNDOLA ============\n");
-						printf("1 - Abastecer prateleiras (Usuário Master)\n");
-						printf("2 - Adicionar produtos ao carrinho\n");
+  		 	case '1': { int opgerenciar;
+						do
+						{
+						system ("cls");
+						printf("\n========== ADMINISTRAR GÔNDOLA ==========");
+						printf("\n1 - Acessar (APENAS USUÁRIO MASTER)\n");
+						printf("2 - Voltar ao menu principal");
+						printf("\n=========================================\n");
+						printf("Escolha uma opção: ");
+						opgerenciar = getche();
+														
+						switch (opgerenciar){
+												case '1': 	if (validarSenhaMaster() == 1) {
+																					
+															do{	
+																system ("cls");																				
+																printf("\n============ MENU REPOSITOR ============");
+																printf("\n1 - Abastecer prateleiras\n");
+																printf("2 - Exibir gôndula");
+																printf("\n========================================\n");
+																status(prateleiras, NUM_PRATELEIRAS);
+																printf ("\nPressione '0' para voltar\n\n");
+																
+																printf("Escolha uma opção: ");
+																opgerenciar = getche();
+																						
+																switch (opgerenciar){
+																					case '1': 	{																														
+																								int p = escolherPrateleira();
+																								Produto x = lerProduto();
+																								adicionarItem(&prateleiras[p], x);																								
+																								} break;
+																					case '2': 	{
+																								int c = escolherPrateleira();
+																								exibirGondula(&prateleiras[c], c); break;
+																								}																																																						
+																					case '0': break;
+																					default: printf("\nOpção inválida.\n"); getche(); break;																							
+																											}
+																} while (opgerenciar != '0'); break;
+																							} else exit (0); break;  																								
+												case '2': return; break; 
+												default: printf("\nOpção inválida.\n"); getche(); break;
+						   												}  
+						} while (op != '2'); break;												
+					}					
+  		 case '2': 	{
+  		 			int opgerenciar;
+					do
+					{
+						system ("cls");
+						printf("\n============ MENU COMPRAS ==============");
+						printf("\n1 - Colocar produtos no carrinho\n");
+						printf("2 - Visualizar carrinho\n");
 						printf("3 - Exibir prateleiras\n");
-						printf("4 - Voltar ao menu principal");
-						printf("\n=============================================\n");							
+						printf("4 - Gerar cupom fiscal");
+						printf("\n========================================\n");
+						status(prateleiras, NUM_PRATELEIRAS);
+						printf ("\nPressione '0' para voltar\n\n");
+						
 						printf("Escolha uma opção: ");
 						opgerenciar = getche();
 						
-						switch(opgerenciar){
-											case '1': {
-														do
-														   {
-										  		 			system ("cls");
-										  					printf("\n========== Menu repositor ==========");
-										  		 	  		printf("\n1 - Acessar (APENAS USUÁRIO MASTER)\n");
-												            printf("2 - Voltar ao menu principal");
-												            printf("\n====================================\n");
-												            printf("Escolha uma opção: ");
-												            opgerenciar = getche();
-														
-															switch (opgerenciar){
-																		case '1': 	if (validarSenhaMaster() == 1) {
-																					
-																					do{	
-																						system ("cls");																				
-																						printf("\n============ MENU REPOSITOR ============");
-																	  		 	  		printf("\n1 - Adicionar produtos\n");
-																			            printf("2 - Exibir gôndula");
-																			            printf("\n========================================\n");
-																			            status(prateleiras, NUM_PRATELEIRAS);
-																						printf ("\nPressione '0' para voltar\n\n");
-																						opgerenciar = getche();
-																						
-																						switch (opgerenciar){
-																											case '1': 	{																														
-																														int p = escolherPrateleira();
-																														Produto x = lerProduto();
-																														adicionarItem(&prateleiras[p], x);
-																														getch(); 
-																														} break;
-																											case '2': {	int c = escolherPrateleira();
-																														exibirGondula(&prateleiras[c], c); getchar (); break;
-																												
-																											}
-																											
-																											
-																											case '0': break;
-																											default: printf("\nOpção inválida.\n"); getche(); break;																							
-																											}
-																					} while (opgerenciar != '0'); break;
-																					
-																					
-																					
-																					
-																					
-																					}
-																					else exit (0); break;  
-																		case '2': return; break; 
-												                		default: printf("\nOpção inválida.\n"); getche(); break;
-						   												}  
-															} while (op != '2'); break;												
-														}					
-											case '2': printf ("\nEm desenvolvimento..."); getchar(); break;
-											case '3': printf ("\nEm desenvolvimento..."); getchar(); break;
-											case '4': break;
+						switch (opgerenciar){
+											case '1': printf ("\nEm desenvolvimento..."); getchar (); break;
+											case'2': printf ("\nEm desenvolvimento..."); getchar (); break;
+											case'3': exibirPrateleiras(prateleiras, NUM_PRATELEIRAS); break;
+											case'4': printf ("\nEm desenvolvimento..."); getchar (); break;
+											case '0': return; break;
 											default: printf("\nOpção inválida.\n"); getche(); break;
 											}
-		   				}while (opgerenciar != '4'); break;
+						
+  		 			} while (op != '0'); break;
+		
 		   			}
-  		 case '2': 	printf ("\n\nEm desenvolvimento..."); getch(); break;
+		   
+		   
+		   
+		   printf ("\n\nEm desenvolvimento..."); getch(); break;
   		 case '3': 	{char voltar;
   		 
   		 			do
@@ -712,7 +728,7 @@ void adicionarItem(PilhaEstatica *p, Produto produto) {
     if (p->topo < MAX_ITENS - 1) {
         p->topo++;
         p->itens[p->topo] = produto; // Adiciona o produto no topo
-        printf("\nProduto '%s' adicionado à prateleira.\n", produto.nome);
+        printf("\nProduto '%s' adicionado.\n", produto.nome);
     } else {
         printf("\nA prateleira está cheia! Não é possível adicionar o produto.\n");
     }
@@ -753,18 +769,88 @@ void exibirGondula(PilhaEstatica* p, int gandula) {
 	        getch();
 	        return;
 	    }
-	    printf("Itens na prateleira %d:\n", gandula);
+	    printf("\nItens na prateleira %d:\n", gandula);
 	    printf("Topo = %d:\n", p->topo);
 	    
 	    int i;
 	    for ( i = 0; i < MAX_ITENS; i++) 
 		{
-	        printf("--- Posicao %d ---\n", i); 
+	        printf("\n------------- Posicao %d -------------\n", i); 
 	        printf("Nome: %s      \n", p->itens[i].nome);
 	        printf("Descricao: %s \n", p->itens[i].descricao);
 	        printf("Preco: %.2f   \n", p->itens[i].preco);
 	        printf("Peso: %.2f    \n", p->itens[i].peso);
-	        printf("-----------------\n");
+	        printf("-------------------------------------\n");
 	    }
 		getch();
+}
+
+void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
+    // Lista de itens para adicionar
+    int i;
+	
+	Produto itens[25] = {
+        {"Arroz", "Pacote de 5kg", 5.0, 20.0},
+        {"Feijão", "Pacote de 1kg", 1.0, 7.5},
+        {"Macarrão", "Pacote de 500g", 0.5, 4.0},
+        {"Açúcar", "Pacote de 2kg", 2.0, 5.0},
+        {"Sal", "Pacote de 1kg", 1.0, 2.0},
+        {"Café", "Pacote de 250g", 0.25, 10.0},
+        {"Farinha", "Pacote de 1kg", 1.0, 6.0},
+        {"Óleo", "Garrafa de 900ml", 0.9, 8.0},
+        {"Leite", "Caixa de 1L", 1.0, 4.5},
+        {"Biscoito", "Pacote de 400g", 0.4, 3.0},
+        {"Chocolate", "Barra de 200g", 0.2, 12.0},
+        {"Sabão", "Pacote com 5 unidades", 1.5, 15.0},
+        {"Detergente", "Frasco de 500ml", 0.5, 3.5},
+        {"Shampoo", "Frasco de 1L", 1.0, 20.0},
+        {"Condicionador", "Frasco de 1L", 1.0, 18.0},
+        {"Amaciante", "Frasco de 2L", 2.0, 10.0},
+        {"Papel Higiênico", "Pacote com 12 rolos", 1.2, 15.0},
+        {"Água", "Garrafa de 1.5L", 1.5, 2.0},
+        {"Refrigerante", "Garrafa de 2L", 2.0, 6.0},
+        {"Suco", "Caixa de 1L", 1.0, 5.0},
+        {"Pão", "Pacote de 500g", 0.5, 4.0},
+        {"Queijo", "Pacote de 300g", 0.3, 15.0},
+        {"Presunto", "Pacote de 300g", 0.3, 12.0},
+        {"Manteiga", "Pote de 200g", 0.2, 8.0},
+        {"Iogurte", "Pote de 170g", 0.17, 3.0}
+    };
+
+    srand(time(NULL)); // Inicializa o gerador de números aleatórios
+
+    // Adicionar itens aleatórios nas prateleiras
+    for (i = 0; i < 25; i++) {
+        int indicePrateleira = rand() % numPrateleiras; // Escolhe uma prateleira aleatoriamente
+        if (prateleiras[indicePrateleira].topo < MAX_ITENS - 1) {
+            adicionarItem(&prateleiras[indicePrateleira], itens[i]);
+        } 
+    }
+}
+
+void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras) {
+	int i, j;
+    system("cls"); // Limpa a tela
+    printf("\n========== CONTEÚDO DAS PRATELEIRAS ==========\n");
+
+    for (i = 0; i < numPrateleiras; i++) {
+        printf("\nPrateleira %d:\n", i);
+
+        if (prateleiras[i].topo == -1) {
+            printf("  [Vazia]\n");
+        } else {
+            for (j = 0; j < prateleiras[i].topo + 1; j++) {
+            	
+                Produto p = prateleiras[i].itens[j];
+                printf("  - Nome: %s\n", p.nome);
+                printf("    Descrição: %s\n", p.descricao);
+                printf("    Peso: %.2f kg\n", p.peso);
+                printf("    Preço: R$ %.2f\n\n", p.preco);
+            }
+        }
+    }
+
+    printf("\n=============================================\n");
+    printf("Pressione qualquer tecla para voltar...\n");
+    getch();
 }
