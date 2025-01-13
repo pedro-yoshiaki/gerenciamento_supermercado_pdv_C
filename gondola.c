@@ -64,7 +64,11 @@ int escolherPrateleira();
 void exibirGondula(PilhaEstatica* p, int gandula);
 void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras);
 void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras);
-
+void inicializar_carrinho(Carrinho* carrinho);
+int escolher_produto(PilhaEstatica* prateleira);
+void adicionarCarrinho(Carrinho* c, Produto item);
+Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao);
+void exibirCarrinho(Carrinho* c);
 /*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
 	
@@ -107,6 +111,7 @@ int main (){
     /*Sleep(2000); /*Para sistemas Windows*/
     
 	inicializarPilha(prateleiras, NUM_PRATELEIRAS);
+	inicializar_carrinho (&carrinho);
 	adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
 	
 	do
@@ -208,8 +213,22 @@ void gerenciar (char E)
 						opgerenciar = getche();
 						
 						switch (opgerenciar){
-											case '1': printf ("\nEm desenvolvimento..."); getchar (); break;
-											case'2': printf ("\nEm desenvolvimento..."); getchar (); break;
+											case '1': 	{char opcao;
+													do 	{
+														system ("cls");
+														int Pescolhida = escolherPrateleira();
+														exibirGondula(&prateleiras[Pescolhida], Pescolhida);
+														printf("\nSe o produto desejado não está nessa prateleira selecione '0' para retornar, caso contrário\nPressione qualquer tecla para continuar... ");
+														fflush (stdin); scanf ("%c", &opcao);
+														if (opcao == '0') break;
+														int produtoEscolhido = escolher_produto(&prateleiras[Pescolhida]);
+        												Produto produto = retirarProduto(prateleiras, Pescolhida, produtoEscolhido);
+        												adicionarCarrinho (&carrinho, produto);														
+														printf("\nDeseja transferir mais produtos? (s/n): ");
+        												opcao = getch();
+														} while (opcao == 'n' || opcao == 'N' || '0'); break;
+														}break;
+											case'2': exibirCarrinho(&carrinho); getchar (); break;
 											case'3': exibirPrateleiras(prateleiras, NUM_PRATELEIRAS); break;
 											case'4': printf ("\nEm desenvolvimento..."); getchar (); break;
 											case '0': return; break;
@@ -762,14 +781,14 @@ int escolherPrateleira() {
 }
 
 // Função para exibir a gondula (as prateleiras e seus itens)
-void exibirGondula(PilhaEstatica* p, int gandula) {
+void exibirGondula(PilhaEstatica* p, int gondula) {
 	if (p->topo == -1) 
 		{
 	        printf("A prateleira esta vazia!\n");
 	        getch();
 	        return;
 	    }
-	    printf("\nItens na prateleira %d:\n", gandula);
+	    printf("\nItens na prateleira %d:\n", gondula);
 	    printf("Topo = %d:\n", p->topo);
 	    
 	    int i;
@@ -783,6 +802,7 @@ void exibirGondula(PilhaEstatica* p, int gandula) {
 	        printf("-------------------------------------\n");
 	    }
 		getch();
+	    
 }
 
 void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
@@ -853,4 +873,103 @@ void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras) {
     printf("\n=============================================\n");
     printf("Pressione qualquer tecla para voltar...\n");
     getch();
+}
+
+void inicializar_carrinho(Carrinho* carrinho) {
+    carrinho->topo = -1;
+}
+
+// Função para o usuário escolher o produto
+int escolher_produto(PilhaEstatica* prateleira) {
+    int produtoEscolhido;
+    char buffer[100];
+
+    while (1) { /*Loop infinito*/
+        printf("\nEscolha o produto pela posição do item listado acima: ");
+        fflush(stdin); // Limpa o buffer de entrada
+        if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
+            if (sscanf(buffer, "%d", &produtoEscolhido) == 1) {
+                if (produtoEscolhido >= 0 && produtoEscolhido <= prateleira->topo) {
+                    return produtoEscolhido;
+                } else {
+                    printf("\nOpção inválida! Escolha um número válido.\n");
+                }
+            } else {
+                printf("\nEntrada inválida! Por favor, digite um número.\n");
+            }
+        }
+    }
+}
+
+Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao) {
+    PilhaEstatica* prateleira = &p[prateleiraEscolhida]; // Referência à prateleira escolhida
+    int i;
+
+    if (prateleira->topo == -1) {
+        printf("\nErro: A prateleira está vazia!\n");
+        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padrão
+        return produtoVazio;
+    }
+
+    if (posicao < 0 || posicao > prateleira->topo) {
+        printf("\nErro: Posição inválida!\n");
+        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padrão
+        return produtoVazio;
+    }
+
+    // Pegar o produto na posição especificada
+    Produto produtoRemovido = prateleira->itens[posicao];
+
+    // Reorganizar os produtos acima da posição removida
+    for (i = posicao; i < prateleira->topo; i++) {
+        prateleira->itens[i] = prateleira->itens[i + 1];
+    }
+	
+    // Ajustar o topo da pilha
+    Produto vazio = {"", "", 0.0, 0.0};
+    prateleiras[prateleiraEscolhida].itens[prateleira->topo] = vazio;
+    prateleira->topo--;
+
+    printf("\nProduto \"%s\" retirado com sucesso da prateleira %d, posição %d!\n",
+           produtoRemovido.nome, prateleiraEscolhida, posicao);
+
+    return produtoRemovido;
+}
+
+
+void adicionarCarrinho(Carrinho* c, Produto item) {
+    // Verifica se a pilha está cheia
+    if (c->topo >= MAX_ITENS - 1) {
+        printf("\nErro: O carrinho está cheio! Não é possível adicionar mais itens.\n");
+        return;
+    }
+
+    // Incrementa o topo e adiciona o item
+    c->topo++;
+    c->compras[c->topo] = item;
+
+    printf("\nProduto \"%s\" adicionado ao carrinho com sucesso!\n", item.nome);
+}
+
+void exibirCarrinho(Carrinho* c) {
+	int i;
+    // Verifica se o carrinho está vazio
+    system ("cls");
+	if (c->topo == -1) {
+        printf("\nO carrinho está vazio.\n");
+        return;
+    }
+	printf ("\nTopo igual a %d\n", c->topo);
+    printf("\nItens no carrinho:\n");
+    printf("------------------------\n");
+
+    // Itera sobre os itens no carrinho e exibe os detalhes
+    for (i = 0; i <= c->topo; i++) {
+        printf("Item %d:\n", i);
+        printf("Nome: %s\n", c->compras[i].nome);
+        printf("Descrição: %s\n", c->compras[i].descricao);
+        printf("Peso: %.2f kg\n", c->compras[i].peso);
+        printf("Preço: R$ %.2f\n", c->compras[i].preco);
+        printf("------------------------\n");
+    }
 }
