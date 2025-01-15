@@ -11,12 +11,12 @@
 #define MAX_ITENS 5
 #define NUM_PRATELEIRAS 10
 #define TAM_CARRINHO 50
-
+#define MAX_NOME 100     
 
 /*Tipos pré-definidos pelo programador*/
 typedef struct
 {
-	char nome [100];
+	char nome [MAX_NOME];
 	char pront [10];
 } reg;
 
@@ -26,6 +26,7 @@ typedef struct
     char descricao[100];
     float peso;
     float preco;
+    int quantidade;
 } 
 Produto; 
 
@@ -40,19 +41,23 @@ typedef struct {
     int topo;
 } Carrinho;
 
-// Estrutura da Fila
-typedef struct {
-    Produto itens[TAM_CARRINHO]; // Array para armazenar os produtos
-    int inicio;              // Índice do primeiro elemento
-    int fim;                 // Índice do próximo elemento vazio
-    int tamanho;             // Quantidade atual de itens na fila
+ typedef struct {
+    Produto itens[100];
+    int frente, tras, tamanho;
 } Fila;
+
 
 /*Variáveis Global*/
 char op;
 PilhaEstatica prateleiras[10]; 
 Carrinho carrinho;
+int opcao;
+int prateleira;
+int opgerenciar;
+int opcao, prateleira, posicao, quantidade;
+int opcompras;
 Fila esteira;
+Produto item;
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
@@ -72,26 +77,31 @@ Produto lerProduto(void);
 void adicionarItem(PilhaEstatica *p, Produto produto);
 int escolherPrateleira();
 void exibirGondula(PilhaEstatica* p, int gandula);
-void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras);
+//void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras);
 void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras);
-void inicializar_carrinho(Carrinho* carrinho);
-int escolher_produto(PilhaEstatica* prateleira);
-void adicionarCarrinho(Carrinho* c, Produto item);
-Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao);
+void inicializarCarrinho(Carrinho* c);
+int carrinhoCheio(Carrinho* c);
 void exibirCarrinho(Carrinho* c);
-void inicializarFila(Fila* fila);
-void exibirFila(Fila* fila);
-void moverEsteira(Carrinho* carrinho, Fila* esteira);
+int todasPrateleirasVazias(PilhaEstatica prateleiras[], int numPrateleiras);
+int adcionarcomprasCarrinho(Carrinho* c, Produto compras);
+void inicializarFila(Fila* f);
+int adicionarNaFila(Fila* f, Produto item);
+int removerDaFila(Fila* f, Produto* item);
+void gerarCupomFiscal(Fila* f, Carrinho* p);
+
 /*------------------------------------------------------------Corpo do programa------------------------------------------------------------------------------------------------------*/
 int main (){
 	
 	int i =0;
+	
 
 	setlocale(LC_ALL, "Portuguese"); /*Definir padrão da língua e não precisar usar tabela ASCII*/
 	
 /*1º Inicializar o programa e confirmar se os usuários padrão estão no arquivo .dat*/	
 /*Se não existir o .dat ele vai avisar que USUARIOS.DAT é inexistente e em seguida criará um*/
 	inicializar(); 
+	inicializarCarrinho(&carrinho);
+	void inicializarFila(Fila* f);
 
 /*2º Capturar o login do usuário*/
 	int tent = 3;
@@ -124,9 +134,7 @@ int main (){
     /*Sleep(2000); /*Para sistemas Windows*/
     
 	inicializarPilha(prateleiras, NUM_PRATELEIRAS);
-	inicializar_carrinho (&carrinho);
-	inicializarFila (&esteira);
-	adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
+	//adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
 	
 	do
 	{
@@ -160,7 +168,8 @@ char    menu ()
 }
 
 void gerenciar (char E)
-{
+{ 	
+	Carrinho *p;
    switch (E)
    	{
   		 	case '1': { int opgerenciar;
@@ -227,27 +236,35 @@ void gerenciar (char E)
 						opgerenciar = getche();
 						
 						switch (opgerenciar){
-											case '1': 	{char opcao;
-													do 	{
-														system ("cls");
-														int Pescolhida = escolherPrateleira();
-														exibirGondula(&prateleiras[Pescolhida], Pescolhida);
-														printf("\nSe o produto desejado não está nessa prateleira selecione '0' para retornar, caso contrário\nPressione qualquer tecla para continuar... ");
-														fflush (stdin); scanf ("%c", &opcao);
-														if (opcao == '0') break;
-														int produtoEscolhido = escolher_produto(&prateleiras[Pescolhida]);
-        												Produto produto = retirarProduto(prateleiras, Pescolhida, produtoEscolhido);
-        												adicionarCarrinho (&carrinho, produto);														
-														printf("\nDeseja transferir mais produtos? (s/n): ");
-        												opcao = getche ();
-														} while (opcao == 's' || opcao == 'S'); break;
-														}break;
-											case'2': exibirCarrinho(&carrinho); getchar (); break;
-											case'3': exibirPrateleiras(prateleiras, NUM_PRATELEIRAS); break;
-											case'4': moverEsteira (&carrinho, &esteira);
-													 getch(); system ("cls");
-													 exibirFila (&esteira);
-													 getchar (); exit (0); break;
+											case '1': 
+											adicionarComprasCarrinho(&carrinho, prateleiras, NUM_PRATELEIRAS);
+											getchar (); 
+											break;
+											case'2':
+											system("cls");
+											exibirCarrinho(&carrinho);
+											printf("Pressione qualquer tecla para voltar...\n");
+											getchar (); 
+											break;
+											case'3': exibirPrateleiras(prateleiras, NUM_PRATELEIRAS); 
+											printf("Pressione qualquer tecla para voltar...\n");
+											getchar();
+											break;
+											case'4':
+											// Checagem do carrinho vazio
+											
+										    if (p->topo == -1) {
+										        printf("\nCarrinho vazio! Nenhum produto para processar.\n");
+										        return; // Retorna sem encerrar o programa
+										    } else {while (removerDaPilha(&carrinho, &item)) 
+											{
+									        adicionarNaFila(&esteira, item);
+									        }
+									        printf("\nProdutos transferidos para a esteira.\n");
+											}
+											gerarCupomFiscal(&esteira, &carrinho);
+											getchar (); 
+											break;
 											case '0': return; break;
 											default: printf("\nOpção inválida.\n"); getche(); break;
 											}
@@ -431,6 +448,7 @@ void exibirUsuarios(char *arquivo) {
         printf("Nome: %s | Prontuário: %s\n", usuario.nome, usuario.pront);
     }
     printf("=================================================================\n");
+    getch();
     fclose(Arq);
 }
 
@@ -753,6 +771,14 @@ Produto lerProduto(void) {
             while(getchar() != '\n'); // Limpar o buffer de entrada
         }
     } while (p.preco <= 0);
+    
+    do {
+        printf("Digite a quantidade do produto: ");
+        if (scanf("%d", &p.quantidade) != 1) {
+            printf("quantidade inválido. Tente novamente.\n");
+            while(getchar() != '\n'); // Limpar o buffer de entrada
+        }
+    } while (p.quantidade <= 0);
 
     // Limpar o buffer de entrada de qualquer caractere residual
     while(getchar() != '\n');
@@ -767,6 +793,7 @@ void adicionarItem(PilhaEstatica *p, Produto produto) {
         printf("\nProduto '%s' adicionado.\n", produto.nome);
     } else {
         printf("\nA prateleira está cheia! Não é possível adicionar o produto.\n");
+        getch();
     }
 }
 
@@ -798,14 +825,14 @@ int escolherPrateleira() {
 }
 
 // Função para exibir a gondula (as prateleiras e seus itens)
-void exibirGondula(PilhaEstatica* p, int gondula) {
+void exibirGondula(PilhaEstatica* p, int gandula) {
 	if (p->topo == -1) 
 		{
 	        printf("A prateleira esta vazia!\n");
 	        getch();
 	        return;
 	    }
-	    printf("\nItens na prateleira %d:\n", gondula);
+	    printf("\nItens na prateleira %d:\n", gandula);
 	    printf("Topo = %d:\n", p->topo);
 	    
 	    int i;
@@ -816,13 +843,13 @@ void exibirGondula(PilhaEstatica* p, int gondula) {
 	        printf("Descricao: %s \n", p->itens[i].descricao);
 	        printf("Preco: %.2f   \n", p->itens[i].preco);
 	        printf("Peso: %.2f    \n", p->itens[i].peso);
+	        printf("Quantidade: %.2d    \n", p->itens[i].quantidade);
 	        printf("-------------------------------------\n");
 	    }
 		getch();
-	    
 }
 
-void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
+/*void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
     // Lista de itens para adicionar
     int i;
 	
@@ -863,7 +890,7 @@ void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
             adicionarItem(&prateleiras[indicePrateleira], itens[i]);
         } 
     }
-}
+}*/
 
 void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras) {
 	int i, j;
@@ -883,185 +910,180 @@ void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras) {
                 printf("    Descrição: %s\n", p.descricao);
                 printf("    Peso: %.2f kg\n", p.peso);
                 printf("    Preço: R$ %.2f\n\n", p.preco);
+                printf("    Quantidade: %.2d\n\n", p.quantidade);
             }
         }
     }
 
     printf("\n=============================================\n");
-    printf("Pressione qualquer tecla para voltar...\n");
     getch();
 }
 
-void inicializar_carrinho(Carrinho* carrinho) {
-    carrinho->topo = -1;
+void inicializarCarrinho(Carrinho* c) {
+    c->topo = -1;
 }
 
-// Função para o usuário escolher o produto
-int escolher_produto(PilhaEstatica* prateleira) {
-    int produtoEscolhido;
-    char buffer[100];
-
-    while (1) { /*Loop infinito*/
-        printf("\nEscolha o produto pela posição do item listado acima: ");
-        fflush(stdin); // Limpa o buffer de entrada
-        if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
-            if (sscanf(buffer, "%d", &produtoEscolhido) == 1) {
-                if (produtoEscolhido >= 0 && produtoEscolhido <= prateleira->topo) {
-                    return produtoEscolhido;
-                } else {
-                    printf("\nOpção inválida! Escolha um número válido.\n");
-                }
-            } else {
-                printf("\nEntrada inválida! Por favor, digite um número.\n");
-            }
-        }
-    }
-}
-
-Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao) {
-    PilhaEstatica* prateleira = &p[prateleiraEscolhida]; // Referência à prateleira escolhida
-    int i;
-
-    if (prateleira->topo == -1) {
-        printf("\nErro: A prateleira está vazia!\n");
-        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padrão
-        return produtoVazio;
-    }
-
-    if (posicao < 0 || posicao > prateleira->topo) {
-        printf("\nErro: Posição inválida!\n");
-        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padrão
-        return produtoVazio;
-    }
-
-    // Pegar o produto na posição especificada
-    Produto produtoRemovido = prateleira->itens[posicao];
-
-    // Reorganizar os produtos acima da posição removida
-    for (i = posicao; i < prateleira->topo; i++) {
-        prateleira->itens[i] = prateleira->itens[i + 1];
-    }
-	
-    // Ajustar o topo da pilha
-    Produto vazio = {"", "", 0.0, 0.0};
-    prateleiras[prateleiraEscolhida].itens[prateleira->topo] = vazio;
-    prateleira->topo--;
-
-    printf("\nProduto \"%s\" retirado com sucesso da prateleira %d, posição %d!\n",
-           produtoRemovido.nome, prateleiraEscolhida, posicao);
-
-    return produtoRemovido;
-}
-
-
-void adicionarCarrinho(Carrinho* c, Produto item) {
-    // Verifica se a pilha está cheia
-    if (c->topo >= MAX_ITENS - 1) {
-        printf("\nErro: O carrinho está cheio! Não é possível adicionar mais itens.\n");
-        return;
-    }
-
-    // Incrementa o topo e adiciona o item
-    c->topo++;
-    c->compras[c->topo] = item;
-
-    printf("\nProduto \"%s\" adicionado ao carrinho com sucesso!\n", item.nome);
+int carrinhoCheio(Carrinho* c) {
+    return c->topo == TAM_CARRINHO - 1;
 }
 
 void exibirCarrinho(Carrinho* c) {
-	int i;
-    // Verifica se o carrinho está vazio
-    system ("cls");
-	if (c->topo == -1) {
-        printf("\nO carrinho está vazio.\n");
+    if (c->topo == -1) {
+        printf("\nO carrinho está vazio!\n");
         return;
     }
-	printf ("\nTopo igual a %d\n", c->topo);
-    printf("\nItens no carrinho:\n");
-    printf("------------------------\n");
-
-    // Itera sobre os itens no carrinho e exibe os detalhes
-    for (i = 0; i <= c->topo; i++) {
-        printf("Item %d:\n", i);
+    printf("\n======Itens no carrinho:======\n");int i;
+    for ( i= 0; i <= c->topo; i++) {
+        printf("--- Item %d ---\n", i + 1);
         printf("Nome: %s\n", c->compras[i].nome);
         printf("Descrição: %s\n", c->compras[i].descricao);
-        printf("Peso: %.2f kg\n", c->compras[i].peso);
-        printf("Preço: R$ %.2f\n", c->compras[i].preco);
-        printf("------------------------\n");
+        printf("Preço: %.2f\n", c->compras[i].preco);
+        printf("Peso: %.2f\n", c->compras[i].peso);
+        printf("Quantidade: %d\n", c->compras[i].quantidade);
+        printf("\n");
     }
 }
 
-void inicializarFila(Fila* fila) {
-    fila->inicio = 0;
-    fila->fim = 0;
-    fila->tamanho = 0;
-}
-
-void moverEsteira(Carrinho* carrinho, Fila* esteira) {
-    // Verificar se o carrinho está vazio
-    if (carrinho->topo == -1) {
-        printf("\nErro: O carrinho está vazio! Não há produtos para mover.\n");
-        return;
-    }
-
-    // Mover todos os produtos do carrinho para a esteira
-    while (carrinho->topo >= 0) {
-        // Verificar se a esteira está cheia
-        if (esteira->tamanho >= TAM_CARRINHO) {
-            printf("\nErro: A esteira está cheia! Não é possível adicionar mais produtos.\n");
-            break;
+int todasPrateleirasVazias(PilhaEstatica prateleiras[], int numPrateleiras) {
+    int i;
+	for (i = 0; i < numPrateleiras; i++) {
+        if (prateleiras[i].topo != -1) {
+            return 0; // Existe pelo menos uma prateleira com itens
         }
-		
-        // Retirar o produto do topo do carrinho
-        Produto produtoMovido = carrinho->compras[carrinho->topo];
-		Produto vazio = {"", "", 0.0, 0.0};
-    	carrinho->compras[carrinho->topo] = vazio;
-        carrinho->topo--;
-
-        // Adicionar o produto na fila (esteira)
-        esteira->itens[esteira->fim] = produtoMovido;
-        esteira->fim = (esteira->fim + 1) % TAM_CARRINHO; // Incremento circular
-        esteira->tamanho++;
-
-        printf("\nProduto \"%s\" movido do carrinho para a esteira com sucesso!\n", produtoMovido.nome);
     }
-
-    // Informar que todos os produtos foram movidos, se aplicável
-    if (carrinho->topo == -1) {
-        printf("\nTodos os produtos foram movidos para a esteira.\n");
-    }
+    return 1; // Todas as prateleiras estão vazias
 }
 
-void exibirFila(Fila* fila) {
-    // Verificar se a fila está vazia
-    if (fila->tamanho == 0) {
-        printf("\nA esteira está vazia! Nenhum produto para exibir.\n");
-        return;
-    }
 
-    printf("\nCupom Fiscal (ordem de processamento):\n");
-    printf("--------------------------------------------------\n");
+int adicionarComprasCarrinho(Carrinho* c, PilhaEstatica prateleiras[], int numPrateleiras) {
+    if (carrinhoCheio(c)) {
+        printf("\nO carrinho está cheio! Não é possível adicionar mais itens.\n");
+        return 0;
+    }
     
-    float valorTotal = 0.0; // Variável para armazenar o valor total dos produtos
-    int i, posicaoAtual = fila->inicio;
-
-    for (i = 0; i < fila->tamanho; i++) {
-        Produto produto = fila->itens[posicaoAtual];
-        printf("Produto %d:\n", i + 1);
-        printf("Nome: %s\n", produto.nome);
-        printf("Descrição: %s\n", produto.descricao);
-        printf("Peso: %.2f kg\n", produto.peso);
-        printf("Preço: R$ %.2f\n", produto.preco);
-        printf("--------------------------------------------------\n");
-
-        // Adicionar o preço do produto ao valor total
-        valorTotal += produto.preco;
-
-        // Incremento circular para avançar na fila
-        posicaoAtual = (posicaoAtual + 1) % TAM_CARRINHO;
+    if (todasPrateleirasVazias(prateleiras, numPrateleiras)) {
+        printf("\nTodas as prateleiras estão vazias! Não há itens para adicionar ao carrinho.\n");
+        return 0;
     }
 
-    // Exibir o valor total ao final
-    printf("Valor Total a Pagar: R$ %.2f\n", valorTotal);
-    printf("--------------------------------------------------\n");
+    int prateleira, posicao, quantidade, op = 1;
+
+    do {
+        exibirPrateleiras(prateleiras, numPrateleiras);
+
+        printf("Escolha a prateleira (0 a %d): ", numPrateleiras - 1);
+        scanf("%d", &prateleira);
+        getchar();
+
+        if (prateleira < 0 || prateleira >= numPrateleiras || prateleiras[prateleira].topo == -1) {
+            printf("Prateleira inválida ou vazia!\n");
+            continue;
+        }
+
+        printf("Escolha a posição do item (1 a %d): ", prateleiras[prateleira].topo + 1);
+        scanf("%d", &posicao);
+        getchar();
+
+        if (posicao < 1 || posicao > prateleiras[prateleira].topo + 1) {
+            printf("Posição inválida!\n");
+            continue;
+        }
+
+        Produto* item = &prateleiras[prateleira].itens[posicao - 1];
+
+        printf("Digite a quantidade a retirar: ");
+        scanf("%d", &quantidade);
+        getchar();
+
+        if (quantidade <= 0 || quantidade > item->quantidade) {
+            printf("Quantidade inválida!\n");
+            continue;
+        }
+
+        // Atualizar quantidade na prateleira
+        item->quantidade -= quantidade;
+
+        // Adicionar item ao carrinho
+        Produto novoItem = *item;
+        novoItem.quantidade = quantidade;
+
+        c->topo++;
+        c->compras[c->topo] = novoItem;
+
+        printf("Item '%s' adicionado ao carrinho!\n", novoItem.nome);
+
+        // Remover item da prateleira se quantidade for 0
+        if (item->quantidade == 0) {
+            printf("O item '%s' foi removido da prateleira.\n", item->nome);
+
+            // Ajustar itens restantes na prateleira
+			int i;
+            for ( i = posicao - 1; i < prateleiras[prateleira].topo; i++) {
+                prateleiras[prateleira].itens[i] = prateleiras[prateleira].itens[i + 1];
+            }
+
+            // Atualizar o topo da prateleira
+            prateleiras[prateleira].topo--;
+        }
+
+        // Perguntar ao usuário se deseja continuar
+        printf("\nDigite 0 para parar de adicionar itens ao carrinho ou qualquer outro número para continuar: ");
+        scanf("%d", &op);
+        getchar();
+
+    } while (op != 0 && !carrinhoCheio(c));
+
+    return 1;
+}
+
+void inicializarFila(Fila* f) {
+    f->frente = 0;
+    f->tras = -1;
+    f->tamanho = 0;
+}
+
+int adicionarNaFila(Fila* f, Produto item) {
+    if (f->tamanho == 100) return 0; // Fila cheia
+    f->tras = (f->tras + 1) % 100;
+    f->itens[f->tras] = item;
+    f->tamanho++;
+    return 1;
+}
+
+int removerDaFila(Fila* f, Produto* item) {
+    if (f->tamanho == 0) return 0; // Fila vazia
+    *item = f->itens[f->frente];
+    f->frente = (f->frente + 1) % 100;
+    f->tamanho--;
+    return 1;
+}
+
+int removerDaPilha(Carrinho* c, Produto* item) {
+    if (c->topo == -1) return 0; // Pilha vazia
+    *item = c->compras[c->topo--];
+    return 1;
+}
+
+void gerarCupomFiscal(Fila* f, Carrinho* p) {
+    float valorTotal = 0.0;
+    Produto item;
+	system("cls");
+    // Cabeçalho do cupom fiscal
+    printf("\n========== CUPOM FISCAL ==========\n");
+    printf("%-20s %-10s %-10s %-10s %-10s\n", "Produto", "Preço", "Qtd", "Subtotal", "Descrição");
+    printf("-------------------------------------------------------------\n");
+
+    // Processa produtos da fila
+    while (removerDaFila(f, &item)) {
+        float subtotal = item.preco * item.quantidade;
+        printf("%-20s R$ %-8.2f %-10d R$ %-8.2f %s\n", 
+            item.nome, item.preco, item.quantidade, subtotal, item.descricao);
+
+        valorTotal += subtotal;
+    }
+
+    // Exibe o valor total
+    printf("-------------------------------------------------------------\n");
+    printf("VALOR TOTAL: R$ %.2f\n", valorTotal);
+    printf("==================================\n");
 }
