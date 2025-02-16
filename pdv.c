@@ -126,7 +126,7 @@ int main (){
 	inicializarPilha(prateleiras, NUM_PRATELEIRAS);
 	inicializar_carrinho (&carrinho);
 	inicializarFila (&esteira);
-	/*adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
+	adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
 	
 	do
 	{
@@ -193,7 +193,7 @@ void gerenciar (char E)
 																					case '1': 	{																														
 																								int p = escolherPrateleira();
 																								Produto x = lerProduto();
-																								adicionarItem(&prateleiras[p], x);																								
+																								adicionarItem(&prateleiras[p], x); getch();																								
 																								} break;
 																					case '2': 	{
 																								int c = escolherPrateleira();
