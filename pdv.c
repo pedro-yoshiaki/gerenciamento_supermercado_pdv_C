@@ -4,23 +4,23 @@
 #include <conio.h>
 #include <string.h>
 #include <locale.h>
-#include <unistd.h> /*Ou windows.h para Windows, uso da função Sleep*/
+#include <unistd.h> /*uso da função Sleep*/
 
 /*Constantes*/
-#define TOTPROFS 30
-#define MAX_ITENS 5
-#define NUM_PRATELEIRAS 10
-#define TAM_CARRINHO 50
+#define TOTPROFS 30 /*Total de professores*/
+#define MAX_ITENS 5 /*Quantidade de máxima de itens na prateleira*/
+#define NUM_PRATELEIRAS 10 /*Número de prateleiras*/
+#define TAM_CARRINHO 50 /*Tamanho de itens que cabem no carrinho (pilha estática)*/
 
 
 /*Tipos pré-definidos pelo programador*/
-typedef struct
+typedef struct /*Estrutura do registro de dados*/
 {
 	char nome [100];
 	char pront [10];
 } reg;
 
-typedef struct   
+typedef struct /*Estrutura de dados de cada produto*/
 {             
 	char nome[50];
     char descricao[100];
@@ -29,13 +29,13 @@ typedef struct
 } 
 Produto; 
 
-typedef struct {
+typedef struct { /*Estrutura de dados da pilha estática*/
     Produto itens[MAX_ITENS];
     int topo; // Índice do último item
 } PilhaEstatica;
 
 // Estrutura do carrinho
-typedef struct {
+typedef struct { /*Estrutura de dados da pilha estática Carrinho*/
     Produto compras[TAM_CARRINHO];
     int topo;
 } Carrinho;
@@ -49,10 +49,10 @@ typedef struct {
 } Fila;
 
 /*Variáveis Global*/
-char op;
-PilhaEstatica prateleiras[10]; 
-Carrinho carrinho;
-Fila esteira;
+char op; /*Caractere que armazena opção do usuário*/
+PilhaEstatica prateleiras[10]; /*Declara uma pilha estática que possui 10 prateleiras*/
+Carrinho carrinho; /*Declara o carrinho*/
+Fila esteira; /*Declara a esteira do tipo Fila*/
 
 /*Protótipos de Funções*/
 void cadastroDefault (reg * vet);
@@ -126,7 +126,7 @@ int main (){
 	inicializarPilha(prateleiras, NUM_PRATELEIRAS);
 	inicializar_carrinho (&carrinho);
 	inicializarFila (&esteira);
-	adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
+	/*adicionarItensAleatorios (prateleiras, NUM_PRATELEIRAS); /*Colocar itens para testar programa*/
 	
 	do
 	{
@@ -256,9 +256,6 @@ void gerenciar (char E)
 		
 		   			}
 		   
-		   
-		   
-		   printf ("\n\nEm desenvolvimento..."); getch(); break;
   		 case '3': 	{char voltar;
   		 
   		 			do
