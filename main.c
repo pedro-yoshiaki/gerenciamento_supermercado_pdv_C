@@ -4,7 +4,7 @@
 #include <conio.h>
 #include <string.h>
 #include <locale.h>
-#include <unistd.h> /*Ou windows.h para Windows, uso da funÁ„o Sleep*/
+#include <unistd.h> /*Ou windows.h para Windows, uso da fun√ß√£o Sleep*/
 
 /*Constantes*/
 #define TOTPROFS 30
@@ -13,7 +13,7 @@
 #define TAM_CARRINHO 50
 
 
-/*Tipos prÈ-definidos pelo programador*/
+/*Tipos pr√©-definidos pelo programador*/
 typedef struct
 {
 	char nome [100];
@@ -31,7 +31,7 @@ Produto;
 
 typedef struct {
     Produto itens[MAX_ITENS];
-    int topo; // Õndice do ˙ltimo item
+    int topo; // √çndice do √∫ltimo item
 } PilhaEstatica;
 
 // Estrutura do carrinho
@@ -43,18 +43,18 @@ typedef struct {
 // Estrutura da Fila
 typedef struct {
     Produto itens[TAM_CARRINHO]; // Array para armazenar os produtos
-    int inicio;              // Õndice do primeiro elemento
-    int fim;                 // Õndice do prÛximo elemento vazio
+    int inicio;              // √çndice do primeiro elemento
+    int fim;                 // √çndice do pr√≥ximo elemento vazio
     int tamanho;             // Quantidade atual de itens na fila
 } Fila;
 
-/*Vari·veis Global*/
+/*Vari√°veis Global*/
 
 PilhaEstatica prateleiras[10]; 
 Carrinho carrinho;
 Fila esteira;
 
-/*ProtÛtipos de FunÁıes*/
+/*Prot√≥tipos de Fun√ß√µes*/
 void cadastroDefault (reg * vet);
 void bubbleSort(reg arr[], int n);
 int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario);
@@ -87,30 +87,30 @@ int main (){
 	char op;
 	int i =0;
 
-	setlocale(LC_ALL, "Portuguese"); /*Definir padr„o da lÌngua e n„o precisar usar tabela ASCII*/
+	setlocale(LC_ALL, "Portuguese"); /*Definir padr√£o da l√≠ngua e n√£o precisar usar tabela ASCII*/
 	
-/*1∫ Inicializar o programa e confirmar se os usu·rios padr„o est„o no arquivo .dat*/	
-/*Se n„o existir o .dat ele vai avisar que USUARIOS.DAT È inexistente e em seguida criar· um*/
+/*1¬∫ Inicializar o programa e confirmar se os usu√°rios padr√£o est√£o no arquivo .dat*/	
+/*Se n√£o existir o .dat ele vai avisar que USUARIOS.DAT √© inexistente e em seguida criar√° um*/
 	inicializar(); 
 
-/*2∫ Capturar o login do usu·rio*/
+/*2¬∫ Capturar o login do usu√°rio*/
 	int tent = 3;
 	char nome[100], prontuario[10];
 
 	while (tent != 0)
 	{
 		system ("cls");
-		printf ("VocÍ tem %d tentativa(s) de login\n", tent);
-		printf("\nNome do usu·rio: "); fgets(nome, 100, stdin);
-		printf("Prontu·rio do usu·rio: "); fgets(prontuario, 10, stdin);
-		/*Remover o caractere '\n' se ele estiver presente apÛs fgets (quando aperta enter ele adiciona o \n que afeta na comparaÁ„o*/
+		printf ("Voc√™ tem %d tentativa(s) de login\n", tent);
+		printf("\nNome do usu√°rio: "); fgets(nome, 100, stdin);
+		printf("Prontu√°rio do usu√°rio: "); fgets(prontuario, 10, stdin);
+		/*Remover o caractere '\n' se ele estiver presente ap√≥s fgets (quando aperta enter ele adiciona o \n que afeta na compara√ß√£o*/
 	    nome[strcspn(nome, "\n")] = '\0';
 	    prontuario[strcspn(prontuario, "\n")] = '\0';
 		
 		/*Validar login*/
 	    int pos = buscaBinariaArquivo("USUARIOS.DAT", nome, prontuario);
 	    if (pos == -1) {
-	        printf("\nUsu·rio ou prontu·rio inv·lido!\n");
+	        printf("\nUsu√°rio ou prontu√°rio inv√°lido!\n");
 	        tent = tent - 1;
 	        getchar();
 	        if (tent == 0) return -1;
@@ -119,7 +119,7 @@ int main (){
 		}
 	}	    
 
-/* 3∫ Exibir Menu do sistema e inicializar as prateleiras*/
+/* 3¬∫ Exibir Menu do sistema e inicializar as prateleiras*/
 	sleep(1);  /*Para sistemas UNIX-like*/
     /*Sleep(2000); /*Para sistemas Windows*/
     
@@ -139,7 +139,7 @@ int main (){
 }
 /*--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------*/
 
-/*FunÁıes*/
+/*Fun√ß√µes*/
 char op;
 char    menu ()
 {
@@ -147,12 +147,12 @@ char    menu ()
 	{
    	 system ("cls");
    	 printf ("\n====== MENU PRINCIPAL ======");
-   	 printf ("\n1. Abastecer GÙndolas  ");
+   	 printf ("\n1. Abastecer G√¥ndolas  ");
    	 printf ("\n2. Caixa/PDV   	");
-   	 printf ("\n3. Gerenciar Usu·rios 	");
+   	 printf ("\n3. Gerenciar Usu√°rios 	");
    	 printf ("\n0. Sair             	");
    	 printf ("\n============================");
-   	 printf ("\n   Escolha opÁ„o: ");
+   	 printf ("\n   Escolha op√ß√£o: ");
    	 fflush (stdin);
    	 op = getche();
     }
@@ -168,11 +168,11 @@ void gerenciar (char E)
 						do
 						{
 						system ("cls");
-						printf("\n========== ADMINISTRAR G‘NDOLA ==========");
-						printf("\n1 - Acessar (APENAS USU¡RIO MASTER)\n");
+						printf("\n========== ADMINISTRAR G√îNDOLA ==========");
+						printf("\n1 - Acessar (APENAS USU√ÅRIO MASTER)\n");
 						printf("2 - Voltar ao menu principal");
 						printf("\n=========================================\n");
-						printf("Escolha uma opÁ„o: ");
+						printf("Escolha uma op√ß√£o: ");
 						opgerenciar = getche();
 														
 						switch (opgerenciar){
@@ -182,12 +182,12 @@ void gerenciar (char E)
 																system ("cls");																				
 																printf("\n============ MENU REPOSITOR ============");
 																printf("\n1 - Abastecer prateleiras\n");
-																printf("2 - Exibir gÙndula");
+																printf("2 - Exibir g√¥ndula");
 																printf("\n========================================\n");
 																status(prateleiras, NUM_PRATELEIRAS);
 																printf ("\nPressione '0' para voltar\n\n");
 																
-																printf("Escolha uma opÁ„o: ");
+																printf("Escolha uma op√ß√£o: ");
 																opgerenciar = getche();
 																						
 																switch (opgerenciar){
@@ -201,12 +201,12 @@ void gerenciar (char E)
 																								exibirGondula(&prateleiras[c], c); break;
 																								}																																																						
 																					case '0': break;
-																					default: printf("\nOpÁ„o inv·lida.\n"); getche(); break;																							
+																					default: printf("\nOp√ß√£o inv√°lida.\n"); getche(); break;																							
 																											}
 																} while (opgerenciar != '0'); break;
 																							} else exit (0); break;  																								
 												case '2': return; break; 
-												default: printf("\nOpÁ„o inv·lida.\n"); getche(); break;
+												default: printf("\nOp√ß√£o inv√°lida.\n"); getche(); break;
 						   												}  
 						} while (op != '2'); break;												
 					}					
@@ -224,7 +224,7 @@ void gerenciar (char E)
 						status(prateleiras, NUM_PRATELEIRAS);
 						printf ("\nPressione '0' para voltar\n\n");
 						
-						printf("Escolha uma opÁ„o: ");
+						printf("Escolha uma op√ß√£o: ");
 						opgerenciar = getche();
 						
 						switch (opgerenciar){
@@ -233,7 +233,7 @@ void gerenciar (char E)
 														system ("cls");
 														int Pescolhida = escolherPrateleira();
 														exibirGondula(&prateleiras[Pescolhida], Pescolhida);
-														printf("\nSe o produto desejado n„o est· nessa prateleira selecione '0' para retornar, caso contr·rio\nPressione qualquer tecla para continuar... ");
+														printf("\nSe o produto desejado n√£o est√° nessa prateleira selecione '0' para retornar, caso contr√°rio\nPressione qualquer tecla para continuar... ");
 														fflush (stdin); scanf ("%c", &opcao);
 														if (opcao == '0') break;
 														int produtoEscolhido = escolher_produto(&prateleiras[Pescolhida]);
@@ -250,7 +250,7 @@ void gerenciar (char E)
 													 exibirFila (&esteira);
 													 getchar (); exit (0); break;
 											case '0': return; break;
-											default: printf("\nOpÁ„o inv·lida.\n"); getche(); break;
+											default: printf("\nOp√ß√£o inv√°lida.\n"); getche(); break;
 											}
 						
   		 			} while (op != '0'); break;
@@ -265,14 +265,14 @@ void gerenciar (char E)
   		 			do
 					   {
 	  		 			system ("cls");
-	  					printf("\n====== GERENCIAR USU¡RIOS ======");
-	  		 	  		printf("\n1 - Cadastrar Usu·rio\n");
-			            printf("2 - Remover Usu·rio\n");
-			            printf("3 - Exibir Usu·rios\n");
-			            printf("4 - Restaurar padr„o\n");
+	  					printf("\n====== GERENCIAR USU√ÅRIOS ======");
+	  		 	  		printf("\n1 - Cadastrar Usu√°rio\n");
+			            printf("2 - Remover Usu√°rio\n");
+			            printf("3 - Exibir Usu√°rios\n");
+			            printf("4 - Restaurar padr√£o\n");
 			            printf("5 - Voltar ao menu principal");
 			            printf("\n================================\n");
-			            printf("Escolha uma opÁ„o: ");
+			            printf("Escolha uma op√ß√£o: ");
 			            op = getche();
 			            
 						switch (op) {
@@ -281,10 +281,10 @@ void gerenciar (char E)
 					                case '3': exibirUsuarios("USUARIOS.DAT"); getch(); break;
 					                case '4':{ 	reg padrao [TOTPROFS];
 												cadastroDefault(padrao); 
-												printf("\nPadr„o de usu·rios restaurado"); getch(); 
+												printf("\nPadr√£o de usu√°rios restaurado"); getch(); 
 											} break;
 					                case '5': break;    
-					                default: printf("\nOpÁ„o inv·lida.\n"); getche(); break;
+					                default: printf("\nOp√ß√£o inv√°lida.\n"); getche(); break;
 		   							}  
 						} while (op != '5'); break;	
            			}
@@ -298,9 +298,9 @@ void cadastroDefault (reg * vet)
 	FILE * Arq;
 	int i = 0;
     
-    memset(vet, '\0', sizeof(vet)); /*Limpar o vetor, adicionar \0 no buffer de memÛria do vetor*/
+    memset(vet, '\0', sizeof(vet)); /*Limpar o vetor, adicionar \0 no buffer de mem√≥ria do vetor*/
     
-	strcpy (vet[0].nome,"Domingos Lucas Latorre de Oliveira"); strcpy (vet[0].pront,"CJ146456"); /*strcpy = string copy, copiar o nome e colocar no vetor na posiÁ„o inicial*/ 
+	strcpy (vet[0].nome,"Domingos Lucas Latorre de Oliveira"); strcpy (vet[0].pront,"CJ146456"); /*strcpy = string copy, copiar o nome e colocar no vetor na posi√ß√£o inicial*/ 
 	strcpy (vet[1].nome,"Leandro Pinto Santana"); strcpy (vet[1].pront,"CP220383");
 	strcpy (vet[2].nome,"Rodrigo Ribeiro de Oliveira"); strcpy (vet[2].pront,"RG134168");
 	strcpy (vet[3].nome,"Andre Luiz da Silva"); strcpy (vet[3].pront,"SP030028");
@@ -343,7 +343,7 @@ void cadastroDefault (reg * vet)
   	  }
   	  
 	for (i = 0; i < 30; i++) {
-		if (vet[i].nome[0] != '\0') { // Nome n„o vazio indica registro v·lido
+		if (vet[i].nome[0] != '\0') { // Nome n√£o vazio indica registro v√°lido
 	    fwrite(&vet[i], sizeof(reg), 1, Arq);
 		}
 	}
@@ -351,14 +351,14 @@ void cadastroDefault (reg * vet)
 }
 
 void bubbleSort(reg arr[], int n) { /*n = tamanho do vetor*/
-    int i, j;        // DeclaraÁ„o de vari·veis antes do for
-    reg temp;      // Reg tempor·rio para troca structs
+    int i, j;        // Declara√ß√£o de vari√°veis antes do for
+    reg temp;      // Reg tempor√°rio para troca structs
 
     // Loop externo para cada string do array
     for (i = 0; i < n - 1; i++) {
         // Loop interno para comparar strings adjacentes
         for (j = 0; j < n - i - 1; j++) {
-            // Se a string atual for "maior" que a prÛxima, trocamos
+            // Se a string atual for "maior" que a pr√≥xima, trocamos
             if (strcmp(arr[j].nome, arr[j + 1].nome) > 0) {
                 temp = arr[j];
                 arr[j] = arr[j + 1];
@@ -374,7 +374,7 @@ int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario) {
     int tamanho, i, esq, dir, meio;
     reg registroAtual;
 
-    // Abrir o arquivo em modo leitura bin·ria
+    // Abrir o arquivo em modo leitura bin√°ria
     Arq = fopen(arquivo, "rb");
     if (Arq == NULL) {
         printf("Erro ao abrir o arquivo %s\n", arquivo);
@@ -386,7 +386,7 @@ int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario) {
     tamanho = ftell(Arq) / sizeof(reg); // Quantidade de registros
     rewind(Arq);
 
-    // Alocar memÛria para armazenar todos os registros
+    // Alocar mem√≥ria para armazenar todos os registros
     vet = (reg *)malloc(tamanho * sizeof(reg));
     if (vet == NULL) {
         printf("malloc devolveu NULL\n");
@@ -398,23 +398,23 @@ int buscaBinariaArquivo(char *arquivo, char *nome,  char *prontuario) {
     fread(vet, sizeof(reg), tamanho, Arq);
     fclose(Arq);
 
-    // Implementar a busca bin·ria
+    // Implementar a busca bin√°ria
     esq = 0;
     dir = tamanho - 1;
     while (esq <= dir) {
         meio = (esq + dir) / 2;
         if (strcmp(vet[meio].nome, nome) == 0 && strcmp(vet[meio].pront, prontuario) == 0) {
-            free(vet); // Liberar memÛria antes de retornar
-            return meio; // Usu·rio encontrado
+            free(vet); // Liberar mem√≥ria antes de retornar
+            return meio; // Usu√°rio encontrado
         } else if (strcmp(vet[meio].nome, nome) < 0) {
-            esq = meio + 1; // Procura ‡ direita
+            esq = meio + 1; // Procura √† direita
         } else {
-            dir = meio - 1; // Procura ‡ esquerda
+            dir = meio - 1; // Procura √† esquerda
         }
     }
 
-    free(vet); // Liberar memÛria antes de retornar
-    return -1; // Usu·rio n„o encontrado
+    free(vet); // Liberar mem√≥ria antes de retornar
+    return -1; // Usu√°rio n√£o encontrado
 }
 
 void exibirUsuarios(char *arquivo) {
@@ -427,9 +427,9 @@ void exibirUsuarios(char *arquivo) {
         return;
     }
 
-    printf("\n\n======================= LISTA DE USU¡RIOS =======================\n\n");
+    printf("\n\n======================= LISTA DE USU√ÅRIOS =======================\n\n");
     while (fread(&usuario, sizeof(reg), 1, Arq)) {
-        printf("Nome: %s | Prontu·rio: %s\n", usuario.nome, usuario.pront);
+        printf("Nome: %s | Prontu√°rio: %s\n", usuario.nome, usuario.pront);
     }
     printf("=================================================================\n");
     fclose(Arq);
@@ -442,10 +442,10 @@ void removerUsuario(char *arquivo) {
     int tamanho, i, j = 0, encontrado = -1;
 
     exibirUsuarios(arquivo);
-    printf("\nDigite o nome do usu·rio a ser removido: ");
+    printf("\nDigite o nome do usu√°rio a ser removido: ");
     fflush(stdin); fgets(nome, 100, stdin); nome[strcspn(nome, "\n")] = '\0';
 
-    // Abrir arquivo e carregar usu·rios
+    // Abrir arquivo e carregar usu√°rios
     Arq = fopen(arquivo, "rb");
     if (Arq == NULL) {
         printf("Erro ao abrir o arquivo.\n");
@@ -459,7 +459,7 @@ void removerUsuario(char *arquivo) {
     fread(vet, sizeof(reg), tamanho, Arq);
     fclose(Arq);
 
-    // Procurar o usu·rio
+    // Procurar o usu√°rio
     for (i = 0; i < tamanho; i++) {
         if (strcmp(nome, vet[i].nome) == 0) {
             encontrado = i;
@@ -467,7 +467,7 @@ void removerUsuario(char *arquivo) {
         }
     }
     if (encontrado == -1) {
-        printf("Usu·rio n„o encontrado.\n");
+        printf("Usu√°rio n√£o encontrado.\n");
         free(vet);
         return;
     }
@@ -483,7 +483,7 @@ void removerUsuario(char *arquivo) {
     // Regravar o arquivo
     Arq = fopen(arquivo, "wb");
     if (Arq == NULL) {
-        printf("Erro ao abrir o arquivo para gravaÁ„o.\n");
+        printf("Erro ao abrir o arquivo para grava√ß√£o.\n");
         free(vet);
         return;
     }
@@ -491,7 +491,7 @@ void removerUsuario(char *arquivo) {
     fclose(Arq);
 
     free(vet);
-    printf("Usu·rio removido com sucesso!\n");
+    printf("Usu√°rio removido com sucesso!\n");
 }
 
 void novoUsuario(char *arquivo) {
@@ -500,7 +500,7 @@ void novoUsuario(char *arquivo) {
     reg *vet;
     int tamanho, i;
 
-    // Abrir o arquivo em modo leitura/escrita bin·ria
+    // Abrir o arquivo em modo leitura/escrita bin√°ria
     Arq = fopen(arquivo, "rb+");
     if (Arq == NULL) {
         printf("Erro ao abrir o arquivo %s\n", arquivo);
@@ -512,10 +512,10 @@ void novoUsuario(char *arquivo) {
     tamanho = ftell(Arq) / sizeof(reg); // Quantidade de registros
     rewind(Arq);
 
-    // Alocar memÛria para armazenar todos os registros
+    // Alocar mem√≥ria para armazenar todos os registros
     vet = (reg *)malloc((tamanho + 1) * sizeof(reg)); // +1 para o novo registro
     if (vet == NULL) {
-        printf("Erro ao alocar memÛria\n");
+        printf("Erro ao alocar mem√≥ria\n");
         fclose(Arq);
         return;
     }
@@ -523,11 +523,11 @@ void novoUsuario(char *arquivo) {
     // Ler os registros existentes para o vetor
     fread(vet, sizeof(reg), tamanho, Arq);
 
-    // Solicitar os dados do novo usu·rio
-    printf("\n\nDigite o nome do novo usu·rio: ");
+    // Solicitar os dados do novo usu√°rio
+    printf("\n\nDigite o nome do novo usu√°rio: ");
     fgets(novo.nome, sizeof(novo.nome), stdin);
     novo.nome[strcspn(novo.nome, "\n")] = '\0'; // Remover o \n do final
-    printf("Digite o prontu·rio do novo usu·rio: ");
+    printf("Digite o prontu√°rio do novo usu√°rio: ");
     fgets(novo.pront, sizeof(novo.pront), stdin);
     novo.pront[strcspn(novo.pront, "\n")] = '\0'; // Remover o \n do final
 
@@ -542,11 +542,11 @@ void novoUsuario(char *arquivo) {
     rewind(Arq);
     fwrite(vet, sizeof(reg), tamanho, Arq);
 
-    // Fechar o arquivo e liberar memÛria
+    // Fechar o arquivo e liberar mem√≥ria
     fclose(Arq);
     free(vet);
 
-    printf("\nNovo usu·rio cadastrado com sucesso e arquivo atualizado!\n");
+    printf("\nNovo usu√°rio cadastrado com sucesso e arquivo atualizado!\n");
 }
 
 void inicializar (void){
@@ -554,10 +554,10 @@ void inicializar (void){
 	int tamanho, i, j;
 	reg * vet;
 	
-	Arq = fopen("USUARIOS.DAT", "rb"); /*Leitura bin·ria*/
+	Arq = fopen("USUARIOS.DAT", "rb"); /*Leitura bin√°ria*/
     if (Arq == NULL) {
         printf("ARQUIVO USUARIOS.DAT INEXISTENTE\n");
-        printf("\nCriando novo arquivo padr„o...\n");
+        printf("\nCriando novo arquivo padr√£o...\n");
         getche();
         reg vet [TOTPROFS];
         cadastroDefault(vet);
@@ -569,10 +569,10 @@ void inicializar (void){
     tamanho = ftell(Arq) / sizeof(reg); // Quantidade de registros
     rewind(Arq);
 
-    // Alocar memÛria para armazenar todos os registros
+    // Alocar mem√≥ria para armazenar todos os registros
     vet = (reg *)malloc(tamanho * sizeof(reg));
     if (vet == NULL) {
-        printf("Erro ao alocar memÛria\n");
+        printf("Erro ao alocar mem√≥ria\n");
         fclose(Arq);
     }
 
@@ -587,7 +587,7 @@ void inicializar (void){
 		free(vet);
 		}
     
-	strcpy (inicio[0].nome,"Domingos Lucas Latorre de Oliveira"); strcpy (inicio[0].pront,"CJ146456"); /*strcpy = string copy, copiar o nome e colocar no vetor na posiÁ„o inicial*/ 
+	strcpy (inicio[0].nome,"Domingos Lucas Latorre de Oliveira"); strcpy (inicio[0].pront,"CJ146456"); /*strcpy = string copy, copiar o nome e colocar no vetor na posi√ß√£o inicial*/ 
 	strcpy (inicio[1].nome,"Leandro Pinto Santana"); strcpy (inicio[1].pront,"CP220383");
 	strcpy (inicio[2].nome,"Rodrigo Ribeiro de Oliveira"); strcpy (inicio[2].pront,"RG134168");
 	strcpy (inicio[3].nome,"Andre Luiz da Silva"); strcpy (inicio[3].pront,"SP030028");
@@ -631,7 +631,7 @@ void inicializar (void){
         if (!encontrado) { /*se encontrado for 0*/
             vet = realloc(vet, (tamanho + 1) * sizeof(reg));
             if (vet == NULL) {
-                printf("Erro ao alocar memÛria\n");
+                printf("Erro ao alocar mem√≥ria\n");
                 exit(1);
             }
             vet[tamanho] = inicio[i];
@@ -651,7 +651,7 @@ void inicializar (void){
     }
      free(inicio);
 	}
-    // Liberar memÛria alocada
+    // Liberar mem√≥ria alocada
     free(vet);   
 }
 
@@ -659,14 +659,14 @@ int compararRegistros(const reg *a, const reg *b) {
     return (strcmp(a->nome, b->nome) == 0 && strcmp(a->pront, b->pront) == 0);
 }        
 
-/* FunÁ„o para validar a senha do usu·rio master */
+/* Fun√ß√£o para validar a senha do usu√°rio master */
 int validarSenhaMaster(void) {
     char s1, s2, s3, s4;
     int tentativas = 3;
 
     while (tentativas > 0) {
     	system ("cls");
-        printf("\nDigite a senha do usu·rio master (4 Caracteres): ");
+        printf("\nDigite a senha do usu√°rio master (4 Caracteres): ");
         fflush (stdin); s1 = getch(); printf ("*");
         fflush (stdin); s2 = getch(); printf ("*");
         fflush (stdin); s3 = getch(); printf ("*");
@@ -681,7 +681,7 @@ int validarSenhaMaster(void) {
         }
     }
 
-    return 0; // Falha na autenticaÁ„o
+    return 0; // Falha na autentica√ß√£o
 }
 														
 void status(PilhaEstatica prateleiras[], int numPrateleiras) {
@@ -711,9 +711,9 @@ void inicializarPilha(PilhaEstatica prateleiras[], int numPrateleiras) {
         // Zera os campos dos itens das prateleiras
         for (j = 0; j < MAX_ITENS; j++) {
             prateleiras[i].itens[j].nome[0] = '\0'; // Zera o nome
-            prateleiras[i].itens[j].descricao[0] = '\0'; // Zera a descriÁ„o
+            prateleiras[i].itens[j].descricao[0] = '\0'; // Zera a descri√ß√£o
             prateleiras[i].itens[j].peso = 0.0f; // Zera o peso
-            prateleiras[i].itens[j].preco = 0.0f; // Zera o preÁo
+            prateleiras[i].itens[j].preco = 0.0f; // Zera o pre√ßo
         }
     }
 }
@@ -722,35 +722,35 @@ Produto lerProduto(void) {
 	Produto p;
     do {
         printf("\nDigite o nome do produto: ");
-        fgets(p.nome, sizeof(p.nome), stdin); // LÍ atÈ o limite do buffer
+        fgets(p.nome, sizeof(p.nome), stdin); // L√™ at√© o limite do buffer
         p.nome[strcspn(p.nome, "\n")] = '\0'; // Remove a nova linha
         if (strlen(p.nome) == 0) {
-            printf("Nome n„o pode ser vazio. Tente novamente.\n");
+            printf("Nome n√£o pode ser vazio. Tente novamente.\n");
         }
     } while (strlen(p.nome) == 0);
 
-    // Ler a descriÁ„o do produto e garantir que n„o seja deixado em branco
-        printf("Digite a descriÁ„o do produto: ");
-        fgets(p.descricao, sizeof(p.descricao), stdin); // LÍ atÈ o limite do buffer
+    // Ler a descri√ß√£o do produto e garantir que n√£o seja deixado em branco
+        printf("Digite a descri√ß√£o do produto: ");
+        fgets(p.descricao, sizeof(p.descricao), stdin); // L√™ at√© o limite do buffer
         p.descricao[strcspn(p.descricao, "\n")] = '\0'; // Remove a nova linha
         
-// Ler o peso do produto e garantir que seja um n˙mero v·lido e maior que zero
+// Ler o peso do produto e garantir que seja um n√∫mero v√°lido e maior que zero
     do {
         printf("Digite o peso do produto (em kg): ");        
-        // Verificar se a entrada È um n˙mero v·lido
+        // Verificar se a entrada √© um n√∫mero v√°lido
         if (scanf("%f", &p.peso) != 1) {
-            printf("Peso inv·lido. Tente novamente.\n");
+            printf("Peso inv√°lido. Tente novamente.\n");
             while(getchar() != '\n'); // Limpar o buffer de entrada
         } else if (&p.peso <= 0) {
             printf("Peso deve ser maior que zero. Tente novamente.\n");
         }
-    } while (&p.peso <= 0); // Continua pedindo atÈ que o peso seja v·lido
+    } while (&p.peso <= 0); // Continua pedindo at√© que o peso seja v√°lido
 
-    // Ler o preÁo do produto e garantir que seja um n˙mero v·lido
+    // Ler o pre√ßo do produto e garantir que seja um n√∫mero v√°lido
     do {
-        printf("Digite o preÁo do produto (em R$): ");
+        printf("Digite o pre√ßo do produto (em R$): ");
         if (scanf("%f", &p.preco) != 1) {
-            printf("PreÁo inv·lido. Tente novamente.\n");
+            printf("Pre√ßo inv√°lido. Tente novamente.\n");
             while(getchar() != '\n'); // Limpar o buffer de entrada
         }
     } while (p.preco <= 0);
@@ -767,11 +767,11 @@ void adicionarItem(PilhaEstatica *p, Produto produto) {
         p->itens[p->topo] = produto; // Adiciona o produto no topo
         printf("\nProduto '%s' adicionado.\n", produto.nome);
     } else {
-        printf("\nA prateleira est· cheia! N„o È possÌvel adicionar o produto.\n");
+        printf("\nA prateleira est√° cheia! N√£o √© poss√≠vel adicionar o produto.\n");
     }
 }
 
-// FunÁ„o para escolher a prateleira
+// Fun√ß√£o para escolher a prateleira
 int escolherPrateleira() {
     int prateleiraEscolhida;
     char buffer[100];
@@ -781,24 +781,24 @@ int escolherPrateleira() {
         printf("\nEscolha a prateleira (0 a 9): ");
         fflush(stdin); // Limpa o buffer de entrada
         if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
-            // Verificar se o input contÈm apenas um n˙mero v·lido
+            // Verificar se o input cont√©m apenas um n√∫mero v√°lido
             if (sscanf(buffer, "%d", &prateleiraEscolhida) == 1) {
-                // Verificar se a escolha est· dentro do intervalo v·lido
+                // Verificar se a escolha est√° dentro do intervalo v√°lido
                 if (prateleiraEscolhida >= 0 && prateleiraEscolhida < NUM_PRATELEIRAS) {
                     return prateleiraEscolhida;
                 } else {
-                    printf("\nOpÁ„o inv·lida! A prateleira deve ser entre 0 e 9.\n");
+                    printf("\nOp√ß√£o inv√°lida! A prateleira deve ser entre 0 e 9.\n");
                     getch();
                 }
             } else {
-                printf("\nEntrada inv·lida! Por favor, digite um n˙mero.\n");
+                printf("\nEntrada inv√°lida! Por favor, digite um n√∫mero.\n");
                 getch();
             }
         }
     }
 }
 
-// FunÁ„o para exibir a gondula (as prateleiras e seus itens)
+// Fun√ß√£o para exibir a gondula (as prateleiras e seus itens)
 void exibirGondula(PilhaEstatica* p, int gondula) {
 	if (p->topo == -1) 
 		{
@@ -829,35 +829,35 @@ void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
 	
 	Produto itens[25] = {
         {"Arroz", "Pacote de 5kg", 5.0, 20.0},
-        {"Feij„o", "Pacote de 1kg", 1.0, 7.5},
-        {"Macarr„o", "Pacote de 500g", 0.5, 4.0},
-        {"AÁ˙car", "Pacote de 2kg", 2.0, 5.0},
+        {"Feij√£o", "Pacote de 1kg", 1.0, 7.5},
+        {"Macarr√£o", "Pacote de 500g", 0.5, 4.0},
+        {"A√ß√∫car", "Pacote de 2kg", 2.0, 5.0},
         {"Sal", "Pacote de 1kg", 1.0, 2.0},
-        {"CafÈ", "Pacote de 250g", 0.25, 10.0},
+        {"Caf√©", "Pacote de 250g", 0.25, 10.0},
         {"Farinha", "Pacote de 1kg", 1.0, 6.0},
-        {"”leo", "Garrafa de 900ml", 0.9, 8.0},
+        {"√ìleo", "Garrafa de 900ml", 0.9, 8.0},
         {"Leite", "Caixa de 1L", 1.0, 4.5},
         {"Biscoito", "Pacote de 400g", 0.4, 3.0},
         {"Chocolate", "Barra de 200g", 0.2, 12.0},
-        {"Sab„o", "Pacote com 5 unidades", 1.5, 15.0},
+        {"Sab√£o", "Pacote com 5 unidades", 1.5, 15.0},
         {"Detergente", "Frasco de 500ml", 0.5, 3.5},
         {"Shampoo", "Frasco de 1L", 1.0, 20.0},
         {"Condicionador", "Frasco de 1L", 1.0, 18.0},
         {"Amaciante", "Frasco de 2L", 2.0, 10.0},
-        {"Papel HigiÍnico", "Pacote com 12 rolos", 1.2, 15.0},
-        {"¡gua", "Garrafa de 1.5L", 1.5, 2.0},
+        {"Papel Higi√™nico", "Pacote com 12 rolos", 1.2, 15.0},
+        {"√Ågua", "Garrafa de 1.5L", 1.5, 2.0},
         {"Refrigerante", "Garrafa de 2L", 2.0, 6.0},
         {"Suco", "Caixa de 1L", 1.0, 5.0},
-        {"P„o", "Pacote de 500g", 0.5, 4.0},
+        {"P√£o", "Pacote de 500g", 0.5, 4.0},
         {"Queijo", "Pacote de 300g", 0.3, 15.0},
         {"Presunto", "Pacote de 300g", 0.3, 12.0},
         {"Manteiga", "Pote de 200g", 0.2, 8.0},
         {"Iogurte", "Pote de 170g", 0.17, 3.0}
     };
 
-    srand(time(NULL)); // Inicializa o gerador de n˙meros aleatÛrios
+    srand(time(NULL)); // Inicializa o gerador de n√∫meros aleat√≥rios
 
-    // Adicionar itens aleatÛrios nas prateleiras
+    // Adicionar itens aleat√≥rios nas prateleiras
     for (i = 0; i < 25; i++) {
         int indicePrateleira = rand() % numPrateleiras; // Escolhe uma prateleira aleatoriamente
         if (prateleiras[indicePrateleira].topo < MAX_ITENS - 1) {
@@ -869,7 +869,7 @@ void adicionarItensAleatorios(PilhaEstatica prateleiras[], int numPrateleiras) {
 void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras) {
 	int i, j;
     system("cls"); // Limpa a tela
-    printf("\n========== CONTE⁄DO DAS PRATELEIRAS ==========\n");
+    printf("\n========== CONTE√öDO DAS PRATELEIRAS ==========\n");
 
     for (i = 0; i < numPrateleiras; i++) {
         printf("\nPrateleira %d:\n", i);
@@ -881,9 +881,9 @@ void exibirPrateleiras(PilhaEstatica prateleiras[], int numPrateleiras) {
             	
                 Produto p = prateleiras[i].itens[j];
                 printf("  - Nome: %s\n", p.nome);
-                printf("    DescriÁ„o: %s\n", p.descricao);
+                printf("    Descri√ß√£o: %s\n", p.descricao);
                 printf("    Peso: %.2f kg\n", p.peso);
-                printf("    PreÁo: R$ %.2f\n\n", p.preco);
+                printf("    Pre√ßo: R$ %.2f\n\n", p.preco);
             }
         }
     }
@@ -897,48 +897,48 @@ void inicializar_carrinho(Carrinho* carrinho) {
     carrinho->topo = -1;
 }
 
-// FunÁ„o para o usu·rio escolher o produto
+// Fun√ß√£o para o usu√°rio escolher o produto
 int escolher_produto(PilhaEstatica* prateleira) {
     int produtoEscolhido;
     char buffer[100];
 
     while (1) { /*Loop infinito*/
-        printf("\nEscolha o produto pela posiÁ„o do item listado acima: ");
+        printf("\nEscolha o produto pela posi√ß√£o do item listado acima: ");
         fflush(stdin); // Limpa o buffer de entrada
         if (fgets(buffer, sizeof(buffer), stdin) != NULL) {
             if (sscanf(buffer, "%d", &produtoEscolhido) == 1) {
                 if (produtoEscolhido >= 0 && produtoEscolhido <= prateleira->topo) {
                     return produtoEscolhido;
                 } else {
-                    printf("\nOpÁ„o inv·lida! Escolha um n˙mero v·lido.\n");
+                    printf("\nOp√ß√£o inv√°lida! Escolha um n√∫mero v√°lido.\n");
                 }
             } else {
-                printf("\nEntrada inv·lida! Por favor, digite um n˙mero.\n");
+                printf("\nEntrada inv√°lida! Por favor, digite um n√∫mero.\n");
             }
         }
     }
 }
 
 Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao) {
-    PilhaEstatica* prateleira = &p[prateleiraEscolhida]; // ReferÍncia ‡ prateleira escolhida
+    PilhaEstatica* prateleira = &p[prateleiraEscolhida]; // Refer√™ncia √† prateleira escolhida
     int i;
 
     if (prateleira->topo == -1) {
-        printf("\nErro: A prateleira est· vazia!\n");
-        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padr„o
+        printf("\nErro: A prateleira est√° vazia!\n");
+        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padr√£o
         return produtoVazio;
     }
 
     if (posicao < 0 || posicao > prateleira->topo) {
-        printf("\nErro: PosiÁ„o inv·lida!\n");
-        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padr„o
+        printf("\nErro: Posi√ß√£o inv√°lida!\n");
+        Produto produtoVazio = {"", "", 0.0, 0.0}; // Produto vazio como retorno padr√£o
         return produtoVazio;
     }
 
-    // Pegar o produto na posiÁ„o especificada
+    // Pegar o produto na posi√ß√£o especificada
     Produto produtoRemovido = prateleira->itens[posicao];
 
-    // Reorganizar os produtos acima da posiÁ„o removida
+    // Reorganizar os produtos acima da posi√ß√£o removida
     for (i = posicao; i < prateleira->topo; i++) {
         prateleira->itens[i] = prateleira->itens[i + 1];
     }
@@ -948,7 +948,7 @@ Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao) {
     prateleiras[prateleiraEscolhida].itens[prateleira->topo] = vazio;
     prateleira->topo--;
 
-    printf("\nProduto \"%s\" retirado com sucesso da prateleira %d, posiÁ„o %d!\n",
+    printf("\nProduto \"%s\" retirado com sucesso da prateleira %d, posi√ß√£o %d!\n",
            produtoRemovido.nome, prateleiraEscolhida, posicao);
 
     return produtoRemovido;
@@ -956,9 +956,9 @@ Produto retirarProduto(PilhaEstatica* p, int prateleiraEscolhida, int posicao) {
 
 
 void adicionarCarrinho(Carrinho* c, Produto item) {
-    // Verifica se a pilha est· cheia
+    // Verifica se a pilha est√° cheia
     if (c->topo >= MAX_ITENS - 1) {
-        printf("\nErro: O carrinho est· cheio! N„o È possÌvel adicionar mais itens.\n");
+        printf("\nErro: O carrinho est√° cheio! N√£o √© poss√≠vel adicionar mais itens.\n");
         return;
     }
 
@@ -971,10 +971,10 @@ void adicionarCarrinho(Carrinho* c, Produto item) {
 
 void exibirCarrinho(Carrinho* c) {
 	int i;
-    // Verifica se o carrinho est· vazio
+    // Verifica se o carrinho est√° vazio
     system ("cls");
 	if (c->topo == -1) {
-        printf("\nO carrinho est· vazio.\n");
+        printf("\nO carrinho est√° vazio.\n");
         return;
     }
 	printf ("\nTopo igual a %d\n", c->topo);
@@ -985,9 +985,9 @@ void exibirCarrinho(Carrinho* c) {
     for (i = 0; i <= c->topo; i++) {
         printf("Item %d:\n", i);
         printf("Nome: %s\n", c->compras[i].nome);
-        printf("DescriÁ„o: %s\n", c->compras[i].descricao);
+        printf("Descri√ß√£o: %s\n", c->compras[i].descricao);
         printf("Peso: %.2f kg\n", c->compras[i].peso);
-        printf("PreÁo: R$ %.2f\n", c->compras[i].preco);
+        printf("Pre√ßo: R$ %.2f\n", c->compras[i].preco);
         printf("------------------------\n");
     }
 }
@@ -999,17 +999,17 @@ void inicializarFila(Fila* fila) {
 }
 
 void moverEsteira(Carrinho* carrinho, Fila* esteira) {
-    // Verificar se o carrinho est· vazio
+    // Verificar se o carrinho est√° vazio
     if (carrinho->topo == -1) {
-        printf("\nErro: O carrinho est· vazio! N„o h· produtos para mover.\n");
+        printf("\nErro: O carrinho est√° vazio! N√£o h√° produtos para mover.\n");
         return;
     }
 
     // Mover todos os produtos do carrinho para a esteira
     while (carrinho->topo >= 0) {
-        // Verificar se a esteira est· cheia
+        // Verificar se a esteira est√° cheia
         if (esteira->tamanho >= TAM_CARRINHO) {
-            printf("\nErro: A esteira est· cheia! N„o È possÌvel adicionar mais produtos.\n");
+            printf("\nErro: A esteira est√° cheia! N√£o √© poss√≠vel adicionar mais produtos.\n");
             break;
         }
 		
@@ -1027,38 +1027,38 @@ void moverEsteira(Carrinho* carrinho, Fila* esteira) {
         printf("\nProduto \"%s\" movido do carrinho para a esteira com sucesso!\n", produtoMovido.nome);
     }
 
-    // Informar que todos os produtos foram movidos, se aplic·vel
+    // Informar que todos os produtos foram movidos, se aplic√°vel
     if (carrinho->topo == -1) {
         printf("\nTodos os produtos foram movidos para a esteira.\n");
     }
 }
 
 void exibirFila(Fila* fila) {
-    // Verificar se a fila est· vazia
+    // Verificar se a fila est√° vazia
     if (fila->tamanho == 0) {
-        printf("\nA esteira est· vazia! Nenhum produto para exibir.\n");
+        printf("\nA esteira est√° vazia! Nenhum produto para exibir.\n");
         return;
     }
 
     printf("\nCupom Fiscal (ordem de processamento):\n");
     printf("--------------------------------------------------\n");
     
-    float valorTotal = 0.0; // Vari·vel para armazenar o valor total dos produtos
+    float valorTotal = 0.0; // Vari√°vel para armazenar o valor total dos produtos
     int i, posicaoAtual = fila->inicio;
 
     for (i = 0; i < fila->tamanho; i++) {
         Produto produto = fila->itens[posicaoAtual];
         printf("Produto %d:\n", i + 1);
         printf("Nome: %s\n", produto.nome);
-        printf("DescriÁ„o: %s\n", produto.descricao);
+        printf("Descri√ß√£o: %s\n", produto.descricao);
         printf("Peso: %.2f kg\n", produto.peso);
-        printf("PreÁo: R$ %.2f\n", produto.preco);
+        printf("Pre√ßo: R$ %.2f\n", produto.preco);
         printf("--------------------------------------------------\n");
 
-        // Adicionar o preÁo do produto ao valor total
+        // Adicionar o pre√ßo do produto ao valor total
         valorTotal += produto.preco;
 
-        // Incremento circular para avanÁar na fila
+        // Incremento circular para avan√ßar na fila
         posicaoAtual = (posicaoAtual + 1) % TAM_CARRINHO;
     }
 
