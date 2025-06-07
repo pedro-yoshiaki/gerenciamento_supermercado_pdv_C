@@ -27,15 +27,15 @@ O sistema é dividido em três etapas principais, cada uma utilizando estruturas
 
 ## 🛠️ Tecnologias e Conceitos Aplicados
 - Linguagem: C
-= Estruturas de Dados:
--- `Struct` para modelagem de Usuários e Produtos.
--- Pilha Estática (implementada com Vetor) para as prateleiras e carrinho de compras.
--- Fila Estática (implementada com Vetor) para a esteira do caixa.
+- Estruturas de Dados:
+     - `Struct` para modelagem de Usuários e Produtos.
+     - Pilha Estática (implementada com Vetor) para as prateleiras e carrinho de compras.
+     - Fila Estática (implementada com Vetor) para a esteira do caixa.
 - Algoritmos:
--- `Bubble Sort` para ordenação de usuários.
--- `Busca Binária` para validação de login.
--- Conceitos de Arquivos: Manipulação de arquivos binários (`.DAT`) para persistência de dados.
--- Memória: Alocação dinâmica (`malloc`) para a leitura de dados do arquivo durante a busca.
+     - `Bubble Sort` para ordenação de usuários.
+     - `Busca Binária` para validação de login.
+- Conceitos de Arquivos: Manipulação de arquivos binários (`.DAT`) para persistência de dados.
+- Memória: Alocação dinâmica (`malloc`) para a leitura de dados do arquivo durante a busca.
 
 ## 🚀 Como Executar
 - Compilar o Código: Utilize um compilador C (como o `GCC`) para compilar o arquivo fonte.
