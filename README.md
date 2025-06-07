@@ -46,6 +46,9 @@ Executar o Programa:
 
 Primeira Execução: Ao rodar pela primeira vez, o programa criará o arquivo USUARIOS.DAT com uma lista de usuários padrão, caso ele não exista.
 Login: Utilize um dos usuários padrão para acessar o sistema. Por exemplo:
+
 Nome: Eurides Balbino da Silva
 Prontuário: SP07102X
-Navegação: Após o login, um menu principal será exibido, permitindo acesso a todas as funcionalidades do sistema. Para abastecer as gôndolas, a senha master padrão é 1234.
+
+Navegação: Após o login, um menu principal será exibido, permitindo acesso a todas as funcionalidades do sistema. 
+Para abastecer as gôndolas, a senha master padrão é 1234.
