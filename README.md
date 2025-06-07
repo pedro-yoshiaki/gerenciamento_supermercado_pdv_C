@@ -40,7 +40,7 @@ Memória: Alocação dinâmica (malloc) para a leitura de dados do arquivo duran
 
 ## 🚀 Como Executar
 Compilar o Código: Utilize um compilador C (como o GCC) para compilar o arquivo fonte.
-gcc "Versao 3_pdv.c" -o supermercado.exe
+gcc "main.c" -o supermercado.exe
 Executar o Programa:
 ./supermercado.exe
 
@@ -52,3 +52,14 @@ Prontuário: SP07102X
 
 Navegação: Após o login, um menu principal será exibido, permitindo acesso a todas as funcionalidades do sistema. 
 Para abastecer as gôndolas, a senha master padrão é 1234.
+
+## 🧠 Conclusão e Aprendizados
+Este projeto foi fundamental para solidificar o conhecimento teórico em Estrutura de Dados, demonstrando como conceitos abstratos são aplicados para criar soluções funcionais e organizadas para problemas do cotidiano.
+
+Aplicação Prática de Estruturas de Dados: Ficou claro como a escolha da estrutura correta é crucial para a lógica do negócio. A Pilha (LIFO) se mostrou perfeita para simular o empilhamento de produtos em uma prateleira, enquanto a Fila (FIFO) foi a escolha natural para representar a ordem de atendimento em um caixa. 
+
+Importância dos Algoritmos: A exigência de manter os usuários ordenados para realizar uma busca binária no login não foi apenas um exercício acadêmico, mas uma demonstração prática de como a performance de um sistema pode ser otimizada com a combinação de ordenação e algoritmos de busca eficientes. 
+
+Gerenciamento de Dados com Arquivos: A manipulação de arquivos binários para persistir os dados dos usuários ensinou sobre a importância da gestão de dados fora da memória, garantindo que as informações não sejam perdidas ao final da execução do programa.
+
+Desenvolvimento de um Sistema Modular: A divisão do projeto em funções específicas para cada tarefa (login, gerenciar menus, manipular pilhas/filas) foi essencial para manter o código organizado, legível e de fácil manutenção, refletindo as boas práticas de engenharia de software.
