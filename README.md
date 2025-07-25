@@ -1,8 +1,6 @@
 # 🛒 Sistema de Gerenciamento de Supermercado (PDV)
 Este projeto é uma aplicação de console desenvolvida em linguagem C que simula as operações de um sistema de Ponto de Venda (PDV) e gerenciamento de um supermercado. O sistema abrange desde o controle de acesso de usuários até o abastecimento de produtos nas gôndolas e a finalização de uma compra no caixa.
 
-Foi desenvolvido como projeto semestral para a disciplina de Estrutura de Dados (SPOEDDA), aplicando conceitos fundamentais de Pilhas, Filas, ordenação e busca em arquivos.
-
 ## ✨ Funcionalidades Principais
 O sistema é dividido em três etapas principais, cada uma utilizando estruturas de dados específicas para resolver problemas do mundo real.
 
